@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<head>
+<title>BLOSOM v1.4 - HeatMap</title>
+<script src="https://d3js.org/d3.v3.min.js"></script>
+<script src="https://d3js.org/d3-queue.v3.min.js"></script>
+<script	src='http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
+<link href='http://fonts.googleapis.com/css?family=Raleway' rel='stylesheet' type='text/css'>
+<link href='http://fonts.googleapis.com/css?family=Oswald:400,300,700'	rel='stylesheet' type='text/css'>
+<link rel="stylesheet"	href="https://unpkg.com/leaflet@1.0.3/dist/leaflet.css" />
+<link rel="stylesheet" type="text/css" href="css/osmMap.css">
+<link rel="stylesheet" type="text/css" href="css/slider.css">
+</head>
+<body>
+	<div id="osmMap">
+		<script src="js/shapefile.js"></script>
+	</div>
+	
+	<div id="divslider">
+		<select id="spillTypeSelector">
+			<option value="all" selected="selected">All</option>
+			<option value="water column">Water Column</option>
+			<option value="surfaced">Surfaced</option>
+			<option value="sunk">Sunk</option>
+		</select>
+	</div>
+	
+	<script src="https://unpkg.com/leaflet@1.0.3/dist/leaflet.js"></script>
+	<script src="js/L.D3SvgOverlay.min.js"></script>
+	<script src="js/L.D3SvgOverlay.js"></script>
+	<script src="js/leaflet-heat.js"></script>
+	<script src="js/leaflet.ajax.min.js"></script>
+	<script src="js/osmMap.js"></script>
+
+
+</body>
+</html>

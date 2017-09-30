@@ -1,0 +1,64 @@
+#bodyslider {
+    background-color: white;
+    font-size: 5px;
+    font-family: 'Raleway', sans-serif;
+    fill: #637bad;
+}
+
+p {
+    color: white;
+    margin: 50px;
+}
+
+a {
+    color: #8e3232;
+}
+
+.axis {
+    fill: #637bad;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+}
+
+.axis .halo {
+    stroke: #637bad;
+    stroke-width: 6px;
+    stroke-linecap: round;
+}
+
+.slider .handle path {
+    stroke: #8e3232;
+    stroke-width: 5px;
+    stroke-linecap: round;
+    pointer-events: none;
+}
+
+.slider .handle text {
+    fill: #637bad;
+    text-align: center;
+    font-size: 14px;
+    z-index:-1;
+    font-family: 'Raleway', sans-serif;
+}
+
+.ticks {
+    font: 10px sans-serif;
+    font-color: #637bad;
+}
+
+.tick {
+    font: 14px sans-serif;
+    font-color: #637bad;
+    fill: #637bad;
+     font-family: 'Raleway', sans-serif;
+}
+
+.ticksOver {
+    font: 14px sans-serif;
+    font-color: #637bad;
+    fill: #637bad;
+    font-family: 'Raleway', sans-serif;
+}
+
+
