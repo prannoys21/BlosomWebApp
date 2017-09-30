@@ -1,4 +1,3 @@
-//Author: Prannoy
 var dataWithLatLng=[];
 var sliderSvgOverlay;
 var mapWidth = 50, mapHeight = 50;
