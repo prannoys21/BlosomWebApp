@@ -235,7 +235,7 @@ sliderSvgOverlay = L.d3SvgOverlay(function(sel, proj){
  .on("brush", brushed);
 
  var slider = svgSlider.append("g")
- .attr("class", "slider")
+ .attr("class", "slider leaflet-bottom leaflet-control")
  .call(brush)
  .style("cursor","default");
 

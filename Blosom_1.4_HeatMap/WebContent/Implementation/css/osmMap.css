@@ -1,6 +1,12 @@
-html, body, #osmMap 
+html, body
 {
-	height:93%;
+	height:100%;
+	width: 100%; 
+}
+
+#osmMap 
+{
+	height:98.7%;
 	width: 99.8%; 
 }
 

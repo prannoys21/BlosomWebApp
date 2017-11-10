@@ -15,16 +15,16 @@
 <body>
 	<div id="osmMap">
 		<script src="js/shapefile.js"></script>
-	</div>
-	
-	<div id="divslider">
-		<select id="spillTypeSelector">
+		<div id="divslider" class="divslider leaflet-bottom leaflet-control">
+		<select id="spillTypeSelector" class="spillTypeSelector leaflet-control">
 			<option value="all" selected="selected">All</option>
 			<option value="water column">Water Column</option>
 			<option value="surfaced">Surfaced</option>
 			<option value="sunk">Sunk</option>
 		</select>
+		</div>
 	</div>
+		
 	
 	<script src="https://unpkg.com/leaflet@1.0.3/dist/leaflet.js"></script>
 	<script src="js/L.D3SvgOverlay.min.js"></script>
