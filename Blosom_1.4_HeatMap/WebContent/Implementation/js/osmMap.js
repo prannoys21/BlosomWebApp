@@ -28,11 +28,33 @@ var spillDropDownMap = {};
 var firsTimeLoadSlider = true;
 var heatMapLatLng = [];
 var finalHeatMapCoords = [];
-var heat;
+var heatMapLayerGlobal = L.heatLayer();
 var multipleLayerControl;
+var heatMapOn = true;
 
 $(document).ready(function(){
 	loadEntireDataSetInitially();
+	
+	/*function toggleHeatmap(){
+	if(!$('.leaflet-control-layers-selector').is(":checked")){
+		$('.leaflet-heatmap-layer').hide()
+		} else {
+			$('.leaflet-heatmap-layer').show()
+		}
+		
+	}*/
+	
+	$( "#heatmapToggle" ).click(function() {
+		if(heatMapOn){
+			$('.leaflet-heatmap-layer').hide();
+			heatMapOn = false;
+		} else {
+			heatMapOn = true;
+			$('.leaflet-heatmap-layer').show();
+		}
+		  
+		});
+	
 	// simulateSpill();
 });
 function loadEntireDataSetInitially(){
@@ -48,27 +70,33 @@ function loadEntireDataSetInitially(){
 
 //var map = L.map('osmMap').setView([28.1408716,-88.8464683], 7);
 
-var osmTiles = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'}),
-thunderForest = L.tileLayer('https://{s}.tile.thunderforest.com/outdoors/{z}/{x}/{y}.png?apikey=7c352c8ff1244dd8b732e349e0b0fe8d', {attribution: 'Maps &copy; <a href="http://www.thunderforest.com">Thunderforest</a>, Data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>'});
+var osmTiles = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png'/*, {attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'}*/),
+thunderForest = L.tileLayer('https://{s}.tile.thunderforest.com/outdoors/{z}/{x}/{y}.png?apikey=7c352c8ff1244dd8b732e349e0b0fe8d'/*, {attribution: 'Maps &copy; <a href="http://www.thunderforest.com">Thunderforest</a>, Data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>'}*/);
 
-heat = L.heatLayer(finalHeatMapCoords, {radius:20,blur:25,maxZoom:5,gradient:{0.143:'#feedde',0.285:'#fdd0a2',0.43:'#fdae6b',0.57:'#fd8d3c',0.71:'#f16913',0.86:'#d94801',1.0:'#8c2d04'}});
+/*heat = L.heatLayer(finalHeatMapCoords, {radius:20,blur:25,maxZoom:5,gradient:{0.143:'#feedde',0.285:'#fdd0a2',0.43:'#fdae6b',0.57:'#fd8d3c',0.71:'#f16913',0.86:'#d94801',1.0:'#8c2d04'}});*/
 multipleLayerControl  = new L.layerGroup();
 
-//heat.addTo(multipleLayerControl);
+/*heat.addTo(multipleLayerControl);*/
 var boatRampsLayer  = new L.layerGroup();
 
+var divSliderDropDown  = new L.layerGroup();
+
+//map declaration
 var map = L.map('osmMap', {
     center: [29.1408716,-87.8464683],
     zoom: 8,
-    layers: [osmTiles, thunderForest, multipleLayerControl, boatRampsLayer]
+    renderer: L.svg(),
+    layers: [osmTiles, thunderForest, multipleLayerControl, boatRampsLayer, divSliderDropDown]
   });
 
+/*var svg = d3.select(map.getPanes().overlayPane).append("svg"),
+g = svg.append("g").attr("class", "leaflet-zoom-hide");*/
 
-
+//makes sure dots don't get bigger
 var scale_factor = Math.max((1 / Math.pow(2, map.getZoom() - 13))/64, 0.25);
 var zoomLevel=map.getZoom();
 
-
+//legend for the heatmap
 var legend = L.control({position: 'bottomright'});
 
 legend.onAdd = function (map) {
@@ -85,6 +113,7 @@ legend.onAdd = function (map) {
 };
 legend.addTo(map);
 
+//for the legend
 function getColor(d) {
 	 switch(d) {
      case 14: return "#feedde";
@@ -98,6 +127,7 @@ function getColor(d) {
  }
 }
 
+//data to display boat ramps data
 shp("data/data2.zip").then(function(geojson){
 	rampsJson = geojson;
 	  var geojsonMarkerOptions = {
@@ -123,7 +153,7 @@ shp("data/data2.zip").then(function(geojson){
 // L.control.layers({"OSM Tile layer": osmTiles}, {"SVG Layer":
 // sliderSvgOverlay}).addTo(map);
 
-
+//for the info display of the dots
 function onEachFeature(feature, layer) {
     // does this feature have a property named popupContent?
     if (feature.properties && feature.properties.ID && feature.properties.EBCap && feature.properties.VesCap) {
@@ -146,7 +176,7 @@ sliderSvgOverlay = L.d3SvgOverlay(function(sel, proj){
 	.selectAll('circle')
 	.data(filteredDataForPanel1).enter()
     .append('circle')
-    .attr('r', 2 * scale_factor)
+    .attr('r', 3 * scale_factor)
     .attr('cx',function(d){return  proj.latLngToLayerPoint(d.latLng).x;})
     .attr('cy',function(d){return proj.latLngToLayerPoint(d.latLng).y;})
     .attr('fill',function (d){
@@ -161,9 +191,12 @@ sliderSvgOverlay = L.d3SvgOverlay(function(sel, proj){
      }
  
  drawOilSpillCircles();
+ 
+ 
+ // slider start
  if(firsTimeLoadSlider == true){
 	 firsTimeLoadSlider = false;
- // slider start
+
  var sliderMargin = {
      top: 50,
      right: 50,
@@ -313,7 +346,7 @@ sliderSvgOverlay = L.d3SvgOverlay(function(sel, proj){
 		     	}
 		     });
      heatMapLatLng = [];
-     map.removeLayer(heat)
+     map.removeLayer(heatMapLayerGlobal)
      //map.removeLayer(multipleLayerControl)
      filteredDataForPanel1.forEach(function(eachRow){
     	 // heatMapLatLng[countForHeatMap] = eachRow.latLng
@@ -321,10 +354,12 @@ sliderSvgOverlay = L.d3SvgOverlay(function(sel, proj){
      });
      drawOilSpillCircles();
      finalHeatMapCoords = heatMapLatLng;
-     heat = L.heatLayer(finalHeatMapCoords, {radius:10,blur:15,maxZoom:5,gradient:{0.143:'#feedde',0.285:'#fdd0a2',0.43:'#fdae6b',0.57:'#fd8d3c',0.71:'#f16913',0.86:'#d94801',1.0:'#8c2d04'}}).addTo(multipleLayerControl);
+     heatMapLayerGlobal = L.heatLayer(finalHeatMapCoords, {radius:10,blur:15,maxZoom:5,gradient:{0.143:'#feedde',0.285:'#fdd0a2',0.43:'#fdae6b',0.57:'#fd8d3c',0.71:'#f16913',0.86:'#d94801',1.0:'#8c2d04'}}).addTo(multipleLayerControl);
+     heatMapLayerGlobal.addTo(multipleLayerControl);
 		}
-		
+ 
  	});
+
  sliderSvgOverlay.addTo(map); 
  
 
@@ -334,7 +369,7 @@ sliderSvgOverlay = L.d3SvgOverlay(function(sel, proj){
 	      };
 
 	var groupedOverlays = {
-	          "HeatMap": heat,
+	          /*"HeatMap": multipleLayerControl,*/
 	          "Boat Ramps": boatRampsLayer
 	      };
 

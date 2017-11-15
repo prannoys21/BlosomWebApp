@@ -13,18 +13,20 @@
 <link rel="stylesheet" type="text/css" href="css/slider.css">
 </head>
 <body>
-	<div id="osmMap">
+	<div id="osmMap" style="z-index: 1;">
 		<script src="js/shapefile.js"></script>
-		<div id="divslider" class="divslider leaflet-bottom leaflet-control">
-		<select id="spillTypeSelector" class="spillTypeSelector leaflet-control">
+		
+	</div>
+	<div id="divslider" class="divslider  leaflet-bottom leaflet-control leaflet-overlay-pane svg" style="z-index: 1000;"> <!-- adding leaflet-bar  will add a rectangular box around it  -->
+		<button class="info leaflet-control" id="heatmapToggle">Toggle Heatmap</button>
+		<select id="spillTypeSelector" class="spillTypeSelector info leaflet-control">
 			<option value="all" selected="selected">All</option>
 			<option value="water column">Water Column</option>
 			<option value="surfaced">Surfaced</option>
 			<option value="sunk">Sunk</option>
 		</select>
-		</div>
-	</div>
 		
+		</div>		
 	
 	<script src="https://unpkg.com/leaflet@1.0.3/dist/leaflet.js"></script>
 	<script src="js/L.D3SvgOverlay.min.js"></script>

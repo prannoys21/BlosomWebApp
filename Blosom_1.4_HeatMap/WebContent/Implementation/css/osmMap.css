@@ -2,26 +2,36 @@ html, body
 {
 	height:100%;
 	width: 100%; 
+	margin:0;
+	padding:0;
 }
 
 #osmMap 
 {
-	height:98.7%;
-	width: 99.8%; 
+	height:100%;
+	width: 100%; 
+	/* z-index:1; */
 }
 
 #divslider {
-    width: 900px;
-    height: 150px;
+    width: 50%;
+    height: 18%;
     display: inline-block;
     clear: both;
     position:absolute;
     margin-left:25%;
     font-family: 'Raleway', sans-serif;
+    /* z-index:2; */
 }
 
 #spillTypeSelector {
 	float:left;
+	width: 14%;
+}
+
+
+#heatmapToggle {
+	width: 14%;
 }
 
 .legend {
