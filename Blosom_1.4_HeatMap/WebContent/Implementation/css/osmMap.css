@@ -10,7 +10,7 @@ html, body
 {
 	height:100%;
 	width: 100%; 
-	/* z-index:1; */
+	z-index:1;
 }
 
 #divslider {
@@ -21,7 +21,7 @@ html, body
     position:absolute;
     margin-left:25%;
     font-family: 'Raleway', sans-serif;
-    /* z-index:2; */
+    z-index:2;
 }
 
 #spillTypeSelector {
