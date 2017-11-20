@@ -31,8 +31,11 @@ var finalHeatMapCoords = [];
 var heatMapLayerGlobal = L.heatLayer();
 var multipleLayerControl;
 var heatMapOn = true;
+var cleanedDataObtained;
 
 $(document).ready(function(){
+	
+	//1
 	loadEntireDataSetInitially();
 	
 	/*function toggleHeatmap(){
@@ -43,7 +46,7 @@ $(document).ready(function(){
 		}
 		
 	}*/
-	
+	//2
 	$( "#heatmapToggle" ).click(function() {
 		if(heatMapOn){
 			$('.leaflet-heatmap-layer').hide();
@@ -54,7 +57,30 @@ $(document).ready(function(){
 		}
 		  
 		});
-	
+	//3
+	/*shp("data/data3.zip").then(function(geojson){
+		console.log(geojson);
+		cleanedDataObtained = geojson;
+		  var geojsonMarkerOptions = {
+				    radius: 5,
+				    fillColor: "#ff7800",
+				    color: "#000",
+				    weight: 1,
+				    opacity: 1,
+				    fillOpacity: 0.5
+				};
+
+
+			L.geoJson(cleanedDataObtained,{
+			    pointToLayer: function(feature,latlng){
+			      var circleData = L.circle(latlng,geojsonMarkerOptions);
+			      marker.bindPopup('<b>Parcel Num:</b> ' + feature.properties.PARCEL_NUM + '<br/>' + '<b>Status:</b> ' + feature.properties.surfaced + '<br/>' + '<b>Cleaned:</b> ' + feature.properties.CLEANED);
+			      return circleData;
+			    	 return L.circleMarker(latlng, geojsonMarkerOptions);
+			    },
+			    onEachFeature: onEachFeature
+			
+			  }).addTo(cleanedDataLayer); });*/
 	// simulateSpill();
 });
 function loadEntireDataSetInitially(){
@@ -63,6 +89,7 @@ function loadEntireDataSetInitially(){
  		    d.latLng = [+d.Latitude,+d.Longitude];
  		    return d;
  		  });
+ 		console.log(dataWithLatLng);
  	});
  }
 
@@ -78,7 +105,7 @@ multipleLayerControl  = new L.layerGroup();
 
 /*heat.addTo(multipleLayerControl);*/
 var boatRampsLayer  = new L.layerGroup();
-
+var cleanedDataLayer  = new L.layerGroup();
 var divSliderDropDown  = new L.layerGroup();
 
 //map declaration
@@ -86,7 +113,7 @@ var map = L.map('osmMap', {
     center: [29.1408716,-87.8464683],
     zoom: 8,
     renderer: L.svg(),
-    layers: [osmTiles, thunderForest, multipleLayerControl, boatRampsLayer, divSliderDropDown]
+    layers: [osmTiles, thunderForest, multipleLayerControl, boatRampsLayer, divSliderDropDown, cleanedDataLayer]
   });
 
 /*var svg = d3.select(map.getPanes().overlayPane).append("svg"),
@@ -129,6 +156,7 @@ function getColor(d) {
 
 //data to display boat ramps data
 shp("data/data2.zip").then(function(geojson){
+	console.log(geojson);
 	rampsJson = geojson;
 	  var geojsonMarkerOptions = {
 			    radius: 5,
@@ -153,11 +181,43 @@ shp("data/data2.zip").then(function(geojson){
 // L.control.layers({"OSM Tile layer": osmTiles}, {"SVG Layer":
 // sliderSvgOverlay}).addTo(map);
 
+//for displaying cleaned data
+shp("data/data3_prj.zip").then(function(geojson){
+	console.log(geojson);
+	cleanedDataObtained = geojson;
+	  var geojsonMarkerOptions = {
+			    radius: 5,
+			    fillColor: "#ff7800",
+			    color: "#000",
+			    weight: 1,
+			    opacity: 1,
+			    fillOpacity: 0.5
+			};
+
+
+		L.geoJson(cleanedDataObtained,{
+		    pointToLayer: function(feature,latlng){
+		     /* var circleData = L.circle(latlng,geojsonMarkerOptions);
+		      marker.bindPopup('<b>Parcel Num:</b> ' + feature.properties.PARCEL_NUM + '<br/>' + '<b>Status:</b> ' + feature.properties.surfaced + '<br/>' + '<b>Cleaned:</b> ' + feature.properties.CLEANED);
+		      return circleData;*/
+		    	 return L.circleMarker(latlng, geojsonMarkerOptions);
+		    },
+		    onEachFeature: onEachFeatureCleanedData
+		
+		  }).addTo(cleanedDataLayer); });
+
 //for the info display of the dots
 function onEachFeature(feature, layer) {
     // does this feature have a property named popupContent?
     if (feature.properties && feature.properties.ID && feature.properties.EBCap && feature.properties.VesCap) {
         layer.bindPopup('ID: ' + feature.properties.ID + '<br/>' + 'EB Cap: ' + feature.properties.EBCap + '<br/>' + 'Ves Cap: ' + feature.properties.VesCap);
+    }
+}
+
+function onEachFeatureCleanedData(feature, layer) {
+    // does this feature have a property named popupContent?
+    if (feature.properties && feature.properties.PARCEL_NUM && feature.properties.STATUS /*&& feature.properties.CLEANED*/) {
+        layer.bindPopup('<b>Parcel Num:</b> ' + feature.properties.PARCEL_NUM + '<br/>' + '<b>Status:</b> ' + feature.properties.STATUS + '<br/>' + '<b>Cleaned:</b> ' + feature.properties.CLEANED);
     }
 }
 
@@ -370,7 +430,8 @@ sliderSvgOverlay = L.d3SvgOverlay(function(sel, proj){
 
 	var groupedOverlays = {
 	          /*"HeatMap": multipleLayerControl,*/
-	          "Boat Ramps": boatRampsLayer
+	          "Boat Ramps": boatRampsLayer,
+	          "CleanedData": cleanedDataLayer
 	      };
 
 	L.control.layers(baseLayers, groupedOverlays).addTo(map); 	
