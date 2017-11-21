@@ -84,9 +84,9 @@ $(document).ready(function(){
 	// simulateSpill();
 });
 function loadEntireDataSetInitially(){
- 	d3.csv("data/OilSpill4.csv", function (data) {
+ 	d3.csv("data/finalFile.csv", function (data) {
  		dataWithLatLng = data.map(function(d){
- 		    d.latLng = [+d.Latitude,+d.Longitude];
+ 		    d.latLng = [+d.LATITUDE,+d.LONGITUDE];//CHANGE TO Latitude and Longitude (only L caps) if reading from CSV output of BLOSOM
  		    return d;
  		  });
  		console.log(dataWithLatLng);
@@ -182,7 +182,7 @@ shp("data/data2.zip").then(function(geojson){
 // sliderSvgOverlay}).addTo(map);
 
 //for displaying cleaned data
-shp("data/data3_prj.zip").then(function(geojson){
+/*shp("data/data3_prj.zip").then(function(geojson){
 	console.log(geojson);
 	cleanedDataObtained = geojson;
 	  var geojsonMarkerOptions = {
@@ -197,15 +197,15 @@ shp("data/data3_prj.zip").then(function(geojson){
 
 		L.geoJson(cleanedDataObtained,{
 		    pointToLayer: function(feature,latlng){
-		     /* var circleData = L.circle(latlng,geojsonMarkerOptions);
+		      var circleData = L.circle(latlng,geojsonMarkerOptions);
 		      marker.bindPopup('<b>Parcel Num:</b> ' + feature.properties.PARCEL_NUM + '<br/>' + '<b>Status:</b> ' + feature.properties.surfaced + '<br/>' + '<b>Cleaned:</b> ' + feature.properties.CLEANED);
-		      return circleData;*/
+		      return circleData;
 		    	 return L.circleMarker(latlng, geojsonMarkerOptions);
 		    },
 		    onEachFeature: onEachFeatureCleanedData
 		
 		  }).addTo(cleanedDataLayer); });
-
+*/
 //for the info display of the dots
 function onEachFeature(feature, layer) {
     // does this feature have a property named popupContent?
@@ -270,13 +270,13 @@ sliderSvgOverlay = L.d3SvgOverlay(function(sel, proj){
 
  // scale function
  var timeScale = d3.time.scale.utc()
- .domain([new Date("Mon Mar 2 2015 00:00:00 GMT-0700 (US Mountain Standard Time)"), new Date('Mon Mar 23 2015 00:59:00 GMT-0700 (US Mountain Standard Time)')])
+ .domain([new Date("2015-Sep-03 00:10:00"), new Date("2015-Sep-10 00:10:00")])
  .range([0, sliderWidth])
  .clamp(true);
 
  // initial value
- var startValue = timeScale(new Date("Mon Mar 2 2015 00:00:00 GMT-0700 (US Mountain Standard Time)"));
- startingValue = new Date("Mon Mar 2 2015 00:00:00 GMT-0700 (US Mountain Standard Time)");
+ var startValue = timeScale(new Date("2015-Sep-03 00:10:00"));
+ startingValue = new Date("2015-Sep-03 00:10:00");
  var svgSlider = d3.select("#divslider").append("svg")
  .attr("width", sliderWidth + sliderMargin.left + sliderMargin.right)
  .attr("height", sliderHeight + sliderMargin.top + sliderMargin.bottom)
@@ -400,9 +400,9 @@ sliderSvgOverlay = L.d3SvgOverlay(function(sel, proj){
      developedTime = currentYearSelected +"-"+ currentMonthNameSelected+"-"+ currentDaySelected+" "+ currentHoursSelected;
      filteredDataForPanel1 = dataWithLatLng.filter(function(rowForMonthAndYear) {
      	if(currentSpillType == "water column" || currentSpillType == "surfaced" || currentSpillType == "sunk"){
-         return (rowForMonthAndYear['Current Time'].substring(0,14) ==  developedTime) && (rowForMonthAndYear['Status'] == currentSpillType);
+         return (rowForMonthAndYear['CURR_TIME'].substring(0,14) ==  developedTime) && (rowForMonthAndYear['STATUS'] == currentSpillType); //REPLACE CURR_TIME with Current Time if reading from BLOSOM's CSV output
      	} else if(currentSpillType == "all" || currentSpillType == "select") {
-     		return (rowForMonthAndYear['Current Time'].substring(0,14) ==  developedTime);
+     		return (rowForMonthAndYear['CURR_TIME'].substring(0,14) ==  developedTime);
 		     	}
 		     });
      heatMapLatLng = [];
