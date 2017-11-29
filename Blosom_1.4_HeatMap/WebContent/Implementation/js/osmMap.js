@@ -16,7 +16,6 @@ var currentSecondsSelected;
 var currentMonthNameSelected;
 var developedTime;
 var filteredDataForPanel1=[];
-var filteredDataForPanel2= [];
 var circleColor;
 var spillTypeFilterValue;
 var currentSpillType;
@@ -52,8 +51,8 @@ $(document).ready(function(){
 			$('.leaflet-heatmap-layer').hide();
 			heatMapOn = false;
 		} else {
-			heatMapOn = true;
 			$('.leaflet-heatmap-layer').show();
+			heatMapOn = true;
 		}
 		  
 		});
@@ -84,12 +83,13 @@ $(document).ready(function(){
 	// simulateSpill();
 });
 function loadEntireDataSetInitially(){
- 	d3.csv("data/finalFile.csv", function (data) {
+ 	d3.csv("data/finalFile3.csv", function (data) {
+ 		console.log(data);
  		dataWithLatLng = data.map(function(d){
  		    d.latLng = [+d.LATITUDE,+d.LONGITUDE];//CHANGE TO Latitude and Longitude (only L caps) if reading from CSV output of BLOSOM
  		    return d;
  		  });
- 		console.log(dataWithLatLng);
+ 		
  	});
  }
 
@@ -236,10 +236,13 @@ sliderSvgOverlay = L.d3SvgOverlay(function(sel, proj){
 	.selectAll('circle')
 	.data(filteredDataForPanel1).enter()
     .append('circle')
-    .attr('r', 3 * scale_factor)
+    .attr('r', 4 * scale_factor)
     .attr('cx',function(d){return  proj.latLngToLayerPoint(d.latLng).x;})
     .attr('cy',function(d){return proj.latLngToLayerPoint(d.latLng).y;})
     .attr('fill',function (d){
+    	if(d["CLEANED"] == 1){
+    		return "red";
+    	} else {
     	if(d["Status"] == "water column"){
     		return "brown";
     	} else if(d["Status"] == "sunk"){
@@ -247,7 +250,9 @@ sliderSvgOverlay = L.d3SvgOverlay(function(sel, proj){
     	} else if(d["Status"] == "surfaced"){
     		return "black";
 	    	}
-	    });
+    	
+	    }
+    	});
      }
  
  drawOilSpillCircles();
@@ -270,13 +275,13 @@ sliderSvgOverlay = L.d3SvgOverlay(function(sel, proj){
 
  // scale function
  var timeScale = d3.time.scale.utc()
- .domain([new Date("2015-Sep-03 00:10:00"), new Date("2015-Sep-10 00:10:00")])
+ .domain([new Date("2015-Feb-01 00:00:00"), new Date("2015-Feb-06 23:59:59")])
  .range([0, sliderWidth])
  .clamp(true);
 
  // initial value
- var startValue = timeScale(new Date("2015-Sep-03 00:10:00"));
- startingValue = new Date("2015-Sep-03 00:10:00");
+ var startValue = timeScale(new Date("2015-Feb-01 00:00:00"));
+ startingValue = new Date("2015-Feb-01 00:00:00");
  var svgSlider = d3.select("#divslider").append("svg")
  .attr("width", sliderWidth + sliderMargin.left + sliderMargin.right)
  .attr("height", sliderHeight + sliderMargin.top + sliderMargin.bottom)
@@ -381,7 +386,6 @@ sliderSvgOverlay = L.d3SvgOverlay(function(sel, proj){
 // //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
  	d3.selectAll("circle").remove();
  	currentSpillType = $('#spillTypeSelector').val();
- 
      currentDateSelected = new Date(selectedDateValue);
      currentMonthSelected = (currentDateSelected.getUTCMonth() + 1).toString();
      currentYearSelected = (currentDateSelected.getUTCFullYear()).toString();
@@ -397,27 +401,36 @@ sliderSvgOverlay = L.d3SvgOverlay(function(sel, proj){
      if(currentMinutesSelected<10){
     	 currentMinutesSelected = "0"+ currentMinutesSelected;
      }
-     developedTime = currentYearSelected +"-"+ currentMonthNameSelected+"-"+ currentDaySelected+" "+ currentHoursSelected;
+     developedTime = currentYearSelected +"-"+ currentMonthNameSelected+"-"+ currentDaySelected;/* +" "+ currentHoursSelected;*/
      filteredDataForPanel1 = dataWithLatLng.filter(function(rowForMonthAndYear) {
      	if(currentSpillType == "water column" || currentSpillType == "surfaced" || currentSpillType == "sunk"){
-         return (rowForMonthAndYear['CURR_TIME'].substring(0,14) ==  developedTime) && (rowForMonthAndYear['STATUS'] == currentSpillType); //REPLACE CURR_TIME with Current Time if reading from BLOSOM's CSV output
+         return ((rowForMonthAndYear["CURR_TIME"].substring(0,11) ==  developedTime) && (rowForMonthAndYear["STATUS"] == currentSpillType)); //REPLACE CURR_TIME with Current Time if reading from BLOSOM's CSV output
      	} else if(currentSpillType == "all" || currentSpillType == "select") {
-     		return (rowForMonthAndYear['CURR_TIME'].substring(0,14) ==  developedTime);
+     		return (rowForMonthAndYear["CURR_TIME"].substring(0,11) ==  developedTime);
 		     	}
 		     });
+     drawOilSpillCircles();
+     
+     //heatMap Code
      heatMapLatLng = [];
      map.removeLayer(heatMapLayerGlobal)
      //map.removeLayer(multipleLayerControl)
      filteredDataForPanel1.forEach(function(eachRow){
-    	 // heatMapLatLng[countForHeatMap] = eachRow.latLng
     	 heatMapLatLng.push(eachRow['latLng'])
      });
-     drawOilSpillCircles();
      finalHeatMapCoords = heatMapLatLng;
      heatMapLayerGlobal = L.heatLayer(finalHeatMapCoords, {radius:10,blur:15,maxZoom:5,gradient:{0.143:'#feedde',0.285:'#fdd0a2',0.43:'#fdae6b',0.57:'#fd8d3c',0.71:'#f16913',0.86:'#d94801',1.0:'#8c2d04'}}).addTo(multipleLayerControl);
      heatMapLayerGlobal.addTo(multipleLayerControl);
+    /* if(heatMapOn){
+ 		$('.leaflet-heatmap-layer').hide();
+ 		heatMapOn = false;
+ 		simulateSpill();
+ 	} else {
+ 		$('.leaflet-heatmap-layer').show();
+ 		heatMapOn = true;
+ 		simulateSpill();
+ 	}*/
 		}
- 
  	});
 
  sliderSvgOverlay.addTo(map); 
