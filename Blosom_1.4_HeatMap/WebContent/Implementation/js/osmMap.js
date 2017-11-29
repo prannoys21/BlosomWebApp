@@ -268,20 +268,21 @@ sliderSvgOverlay = L.d3SvgOverlay(function(sel, proj){
      bottom: 50,
      left: 50
  },
-     sliderWidth = 760 - sliderMargin.left - sliderMargin.right,
+     sliderWidth = 790 - sliderMargin.left - sliderMargin.right,
      sliderHeight = 150 - sliderMargin.bottom - sliderMargin.top;
 
  var monthAndYear = [];
-
+var uniqueDateStart = "2015-Feb-01 00:00:00";
+var uniqueDateEnd = "2015-Feb-06 23:59:59";
  // scale function
  var timeScale = d3.time.scale.utc()
- .domain([new Date("2015-Feb-01 00:00:00"), new Date("2015-Feb-06 23:59:59")])
+ .domain([new Date(uniqueDateStart), new Date(uniqueDateEnd)])
  .range([0, sliderWidth])
  .clamp(true);
 
  // initial value
- var startValue = timeScale(new Date("2015-Feb-01 00:00:00"));
- startingValue = new Date("2015-Feb-01 00:00:00");
+ var startValue = timeScale(new Date(uniqueDateStart));
+ startingValue = new Date(uniqueDateStart);
  var svgSlider = d3.select("#divslider").append("svg")
  .attr("width", sliderWidth + sliderMargin.left + sliderMargin.right)
  .attr("height", sliderHeight + sliderMargin.top + sliderMargin.bottom)
@@ -410,17 +411,18 @@ sliderSvgOverlay = L.d3SvgOverlay(function(sel, proj){
 		     	}
 		     });
      drawOilSpillCircles();
-     
-     //heatMap Code
-     heatMapLatLng = [];
-     map.removeLayer(heatMapLayerGlobal)
-     //map.removeLayer(multipleLayerControl)
-     filteredDataForPanel1.forEach(function(eachRow){
-    	 heatMapLatLng.push(eachRow['latLng'])
-     });
-     finalHeatMapCoords = heatMapLatLng;
-     heatMapLayerGlobal = L.heatLayer(finalHeatMapCoords, {radius:10,blur:15,maxZoom:5,gradient:{0.143:'#feedde',0.285:'#fdd0a2',0.43:'#fdae6b',0.57:'#fd8d3c',0.71:'#f16913',0.86:'#d94801',1.0:'#8c2d04'}}).addTo(multipleLayerControl);
-     heatMapLayerGlobal.addTo(multipleLayerControl);
+     if(heatMapOn){
+	     //heatMap Code
+	     heatMapLatLng = [];
+	     map.removeLayer(heatMapLayerGlobal)
+	     //map.removeLayer(multipleLayerControl)
+	     filteredDataForPanel1.forEach(function(eachRow){
+	    	 heatMapLatLng.push(eachRow['latLng'])
+	     });
+	     finalHeatMapCoords = heatMapLatLng;
+	     heatMapLayerGlobal = L.heatLayer(finalHeatMapCoords, {radius:10,blur:15,maxZoom:5,gradient:{0.143:'#feedde',0.285:'#fdd0a2',0.43:'#fdae6b',0.57:'#fd8d3c',0.71:'#f16913',0.86:'#d94801',1.0:'#8c2d04'}}).addTo(multipleLayerControl);
+	     heatMapLayerGlobal.addTo(multipleLayerControl);
+     }
     /* if(heatMapOn){
  		$('.leaflet-heatmap-layer').hide();
  		heatMapOn = false;
