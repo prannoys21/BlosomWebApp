@@ -39,6 +39,7 @@ var developedTimeBoatRampsMonth;
 var boatRampHighlightData;
 var boatRampColor;
 var onlyBoatRampIds = [];
+var toolTipBoatRampColor;
 
 $(document).ready(function(){
 	
@@ -374,9 +375,11 @@ var uniqueDateEnd = "2015-Feb-06 23:59:59";
     .attr('cy',function(d){d.y = proj.latLngToLayerPoint(d.latLng).y; return proj.latLngToLayerPoint(d.latLng).y;})
     .attr('fill', function (d){
     	if(  (onlyBoatRampIds.indexOf(d.properties["ID"])) != -1){
+    		//toolTipBoatRampColor = "red";
     		return "red";
     		} else {
-    		return "green";	    
+    		//toolTipBoatRampColor = "forestgreen";
+    		return "forestgreen";	    
     		}   
     	}) 
       .on("mouseover", handleMouseOver)
@@ -413,18 +416,25 @@ var uniqueDateEnd = "2015-Feb-06 23:59:59";
          y: function() { return proj.latLngToLayerPoint(d.latLng).y - 10; }
      })*/
      /*sel.append(tooltip)*/
-     console.log(d.x,d.y)
+ 	if(  (onlyBoatRampIds.indexOf(d.properties["ID"])) != -1){
+		toolTipBoatRampColor = "red";
+		} else {
+		toolTipBoatRampColor = "forestgreen";
+		} 
+     
+ /*    console.log(d.x,d.y)
      var coordinates = [0, 0];
 coordinates = d3.mouse(this);
 //var x = coordinates[0];
 //var y = coordinates[1];
-var x =  d3.event.clientX, y =d3.event.clientY;
+*/
+ 	var x =  d3.event.clientX, y =d3.event.clientY;
      tooltip.attr("transform","translate(0)")
-     tooltip.html('<div id="divTooltipBoatRampId">' + d.properties["ID"] + '</div><div id="divTooltipBoatRampDetails"><table>' + 
+     tooltip.html('<div id="divTooltipBoatRampId" style="color:'+toolTipBoatRampColor+'">' + d.properties["ID"] + '</div><div id="divTooltipBoatRampDetails"><table>' + 
              '<tr class="trTooltip"><td class="tdFirstTooltip">Exclusion Boom Capacity:</td><td class="tdSecondTooltip">' + d.properties["EBCap"] + '</td></tr>' + 
              '<tr class="trTooltip"><td class="tdFirstTooltip">Vessel Capacity:</td><td class="tdSecondTooltip">' + d.properties["VesCap"] + '</td></tr>')
-             .style("left", (x - (480 * 1)) + "px")
-             .style("top", ( y - (950 * 1)) + "px");
+             .style("left", (x - (475 * 1)) + "px")
+             .style("top", ( y - (955 * 1)) + "px");
               //.style("left", (proj.latLngToLayerPoint(d.latLng).x - (480 * 1)) + "px")
                // .style("top", ( proj.latLngToLayerPoint(d.latLng).y - (780 * 1)) + "px");
      

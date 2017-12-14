@@ -71,10 +71,11 @@ html, body
     height: 20px;
 }
 .tdFirstTooltip{
-    width: 200px;
+    width: 173px;
     /* vertical-align: top; */
 }
 .tdSecondTooltip{
+	font-weight: bold;
     /* vertical-align: top; */
 }
 
