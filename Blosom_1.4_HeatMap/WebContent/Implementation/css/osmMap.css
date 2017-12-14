@@ -34,6 +34,79 @@ html, body
 	width: 14%;
 }
 
+#divTooltip{
+    position: absolute;
+    border: solid;
+    width: 300px;
+    height: 140px;
+    padding: 5px;
+    font-family: Raleway, "sans-serif";
+    text-align: left;
+    pointer-events: none;
+    background: white;
+    color: black;
+    border: 1px solid #2BB0D7;
+    box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    z-index: 1000;
+}
+
+#divTooltipBoatRampId{
+    border: none;
+    border-bottom: solid;
+    font-weight: bold;
+    font-size: 20px;
+    color: forestgreen;
+    height: 25px;
+    padding: 5px 0px;
+}
+#divTooltipBoatRampDetails{
+    padding: 5px 0px;
+    font-weight: normal;
+    font-size: 14px;
+    height: 20px;
+}
+
+.trTooltip{
+    height: 20px;
+}
+.tdFirstTooltip{
+    width: 200px;
+    /* vertical-align: top; */
+}
+.tdSecondTooltip{
+    /* vertical-align: top; */
+}
+
+.d3-tip {
+  line-height: 1;
+  font-weight: bold;
+  padding: 12px;
+  background: rgba(0, 0, 0, 0.8);
+  color: #fff;
+  border-radius: 2px;
+}
+
+/* Creates a small triangle extender for the tooltip */
+.d3-tip:after {
+  box-sizing: border-box;
+  display: inline;
+  font-size: 10px;
+  width: 100%;
+  line-height: 1;
+  color: rgba(0, 0, 0, 0.8);
+  content: "\25BC";
+  position: absolute;
+  text-align: center;
+}
+
+/* Style northward tooltips differently */
+.d3-tip.n:after {
+  margin: -1px 0 0 0;
+  top: 100%;
+  left: 0;
+}
+
 .legend {
 	text-align: left;
     line-height: 18px;

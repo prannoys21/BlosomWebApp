@@ -4,8 +4,8 @@ var mapWidth = 50, mapHeight = 50;
 var circleRadius = 2;
 var projection = d3.geo.albersUsa().translate([mapWidth / 2, mapHeight / 2]);
 var svgMap = d3.select("#svgmap").attr("width", mapWidth).attr("height", mapHeight);
-formatDate = d3.time.format("%d %b %H:%M %p");
-formatDateForTicks = d3.time.format("%d %b");
+var formatDate = d3.time.format("%d %b %H:%M %p");
+var formatDateForTicks = d3.time.format("%d %b");
 var currentDateSelected;
 var currentMonthSelected;
 var currentYearSelected;
@@ -16,6 +16,7 @@ var currentSecondsSelected;
 var currentMonthNameSelected;
 var developedTime;
 var filteredDataForPanel1=[];
+var filteredDataForRamps = [];
 var circleColor;
 var spillTypeFilterValue;
 var currentSpillType;
@@ -31,20 +32,29 @@ var heatMapLayerGlobal = L.heatLayer();
 var multipleLayerControl;
 var heatMapOn = true;
 var cleanedDataObtained;
+var geojsonMarkerOptions;
+var rampsJson = [];
+var developedTimeBoatRamps;
+var developedTimeBoatRampsMonth;
+var boatRampHighlightData;
+var boatRampColor;
+var onlyBoatRampIds = [];
 
 $(document).ready(function(){
 	
 	//1
 	loadEntireDataSetInitially();
 	
-	/*function toggleHeatmap(){
-	if(!$('.leaflet-control-layers-selector').is(":checked")){
-		$('.leaflet-heatmap-layer').hide()
-		} else {
-			$('.leaflet-heatmap-layer').show()
-		}
-		
-	}*/
+	//2
+	shp("data/data2.zip").then(function(geojson){
+		//rampsJson = geojson;
+		rampsJson = geojson.features.map(function(d){
+			    d.latLng = [+d.geometry["coordinates"][1],+d.geometry["coordinates"][0]];//CHANGE TO Latitude and Longitude (only L caps) if reading from CSV output of BLOSOM
+			    return d;
+			  });
+
+	});
+	
 	//2
 	$( "#heatmapToggle" ).click(function() {
 		if(heatMapOn){
@@ -57,31 +67,22 @@ $(document).ready(function(){
 		  
 		});
 	//3
-	/*shp("data/data3.zip").then(function(geojson){
-		console.log(geojson);
-		cleanedDataObtained = geojson;
-		  var geojsonMarkerOptions = {
-				    radius: 5,
-				    fillColor: "#ff7800",
-				    color: "#000",
-				    weight: 1,
-				    opacity: 1,
-				    fillOpacity: 0.5
-				};
-
-
-			L.geoJson(cleanedDataObtained,{
-			    pointToLayer: function(feature,latlng){
-			      var circleData = L.circle(latlng,geojsonMarkerOptions);
-			      marker.bindPopup('<b>Parcel Num:</b> ' + feature.properties.PARCEL_NUM + '<br/>' + '<b>Status:</b> ' + feature.properties.surfaced + '<br/>' + '<b>Cleaned:</b> ' + feature.properties.CLEANED);
-			      return circleData;
-			    	 return L.circleMarker(latlng, geojsonMarkerOptions);
-			    },
-			    onEachFeature: onEachFeature
+	///boatRamp highlighting start
+	d3.csv("data/ResultBoatRampDayWise.csv", function (data) {
+			boatRampHighlightData = data;
+			console.log(boatRampHighlightData);
 			
-			  }).addTo(cleanedDataLayer); });*/
-	// simulateSpill();
+		//for the info display of the dots
+		});
+	///boatRamp highlighting end
+	
+	
+	//4
+	
 });
+
+
+
 function loadEntireDataSetInitially(){
  	d3.csv("data/finalFile3.csv", function (data) {
  		console.log(data);
@@ -95,7 +96,6 @@ function loadEntireDataSetInitially(){
 
 
 
-//var map = L.map('osmMap').setView([28.1408716,-88.8464683], 7);
 
 var osmTiles = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png'/*, {attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'}*/),
 thunderForest = L.tileLayer('https://{s}.tile.thunderforest.com/outdoors/{z}/{x}/{y}.png?apikey=7c352c8ff1244dd8b732e349e0b0fe8d'/*, {attribution: 'Maps &copy; <a href="http://www.thunderforest.com">Thunderforest</a>, Data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>'}*/);
@@ -116,8 +116,7 @@ var map = L.map('osmMap', {
     layers: [osmTiles, thunderForest, multipleLayerControl, boatRampsLayer, divSliderDropDown, cleanedDataLayer]
   });
 
-/*var svg = d3.select(map.getPanes().overlayPane).append("svg"),
-g = svg.append("g").attr("class", "leaflet-zoom-hide");*/
+
 
 //makes sure dots don't get bigger
 var scale_factor = Math.max((1 / Math.pow(2, map.getZoom() - 13))/64, 0.25);
@@ -154,59 +153,23 @@ function getColor(d) {
  }
 }
 
+
+
+var starIcon = L.icon({
+    iconUrl: 'images/star2.png',
+    iconSize:     [16, 16], // size of the icon
+    shadowSize:   [0, 0], // size of the shadow
+    iconAnchor:   [0, 0], // point of the icon which will correspond to marker's location
+    shadowAnchor: [0, 0],  // the same for the shadow
+    popupAnchor:  [0, 0] // point from which the popup should open relative to the iconAnchor
+});
 //data to display boat ramps data
-shp("data/data2.zip").then(function(geojson){
-	console.log(geojson);
-	rampsJson = geojson;
-	  var geojsonMarkerOptions = {
-			    radius: 5,
-			    fillColor: "#ff7800",
-			    color: "#000",
-			    weight: 1,
-			    opacity: 1,
-			    fillOpacity: 0.5
-			};
 
 
-		L.geoJson(rampsJson,{
-		    pointToLayer: function(feature,latlng){
-		      var marker = L.marker(latlng,geojsonMarkerOptions);
-		      marker.bindPopup('<b>ID:</b> ' + feature.properties.ID + '<br/>' + '<b>EB Cap:</b> ' + feature.properties.EBCap + '<br/>' + '<b>Ves Cap:</b> ' + feature.properties.VesCap);
-		      return marker;
-		    	 return L.circleMarker(latlng, geojsonMarkerOptions);
-		    },
-		    onEachFeature: onEachFeature
-		
-		  }).addTo(boatRampsLayer); });
-// L.control.layers({"OSM Tile layer": osmTiles}, {"SVG Layer":
-// sliderSvgOverlay}).addTo(map);
-
-//for displaying cleaned data
-/*shp("data/data3_prj.zip").then(function(geojson){
-	console.log(geojson);
-	cleanedDataObtained = geojson;
-	  var geojsonMarkerOptions = {
-			    radius: 5,
-			    fillColor: "#ff7800",
-			    color: "#000",
-			    weight: 1,
-			    opacity: 1,
-			    fillOpacity: 0.5
-			};
 
 
-		L.geoJson(cleanedDataObtained,{
-		    pointToLayer: function(feature,latlng){
-		      var circleData = L.circle(latlng,geojsonMarkerOptions);
-		      marker.bindPopup('<b>Parcel Num:</b> ' + feature.properties.PARCEL_NUM + '<br/>' + '<b>Status:</b> ' + feature.properties.surfaced + '<br/>' + '<b>Cleaned:</b> ' + feature.properties.CLEANED);
-		      return circleData;
-		    	 return L.circleMarker(latlng, geojsonMarkerOptions);
-		    },
-		    onEachFeature: onEachFeatureCleanedData
-		
-		  }).addTo(cleanedDataLayer); });
-*/
-//for the info display of the dots
+
+
 function onEachFeature(feature, layer) {
     // does this feature have a property named popupContent?
     if (feature.properties && feature.properties.ID && feature.properties.EBCap && feature.properties.VesCap) {
@@ -221,42 +184,27 @@ function onEachFeatureCleanedData(feature, layer) {
     }
 }
 
+/*var tooltip = d3.select("#divslider")
+.append("div")
+.attr("id", "divTooltip")
+.style("opacity", 0);*/
 
+var tooltip = d3.select("#divslider").append("div").attr("id", "divTooltip").style("opacity", 0);
+
+
+tooltip: {
+    followPointer: true
+};
 
 sliderSvgOverlay = L.d3SvgOverlay(function(sel, proj){
 	 $("#spillTypeSelector").change(function () {
 	 simulateSpill();
  });
 
- function drawOilSpillCircles(){
-	 d3.selectAll("circle").remove();
-	 scale_factor = Math.max((1 / Math.pow(2, map.getZoom() - 13))/64, 0.0000002);
-	 sel.append('g')
-	.attr('id','spillParticles')
-	.selectAll('circle')
-	.data(filteredDataForPanel1).enter()
-    .append('circle')
-    .attr('r', 4 * scale_factor)
-    .attr('cx',function(d){return  proj.latLngToLayerPoint(d.latLng).x;})
-    .attr('cy',function(d){return proj.latLngToLayerPoint(d.latLng).y;})
-    .attr('fill',function (d){
-    	if(d["CLEANED"] == 1){
-    		return "red";
-    	} else {
-    	if(d["Status"] == "water column"){
-    		return "brown";
-    	} else if(d["Status"] == "sunk"){
-    		return "blue";
-    	} else if(d["Status"] == "surfaced"){
-    		return "black";
-	    	}
-    	
-	    }
-    	});
-     }
+ 
  
  drawOilSpillCircles();
- 
+ drawBoatRampCircles();
  
  // slider start
  if(firsTimeLoadSlider == true){
@@ -274,6 +222,9 @@ sliderSvgOverlay = L.d3SvgOverlay(function(sel, proj){
  var monthAndYear = [];
 var uniqueDateStart = "2015-Feb-01 00:00:00";
 var uniqueDateEnd = "2015-Feb-06 23:59:59";
+
+
+
  // scale function
  var timeScale = d3.time.scale.utc()
  .domain([new Date(uniqueDateStart), new Date(uniqueDateEnd)])
@@ -338,7 +289,6 @@ var uniqueDateEnd = "2015-Feb-06 23:59:59";
  .call(brush)
  .style("cursor","default");
 
- /* var sliderBar = svgSliderContainer.selectAll("body"); */
 
  slider.selectAll(".extent,.resize")
      .remove();
@@ -382,6 +332,146 @@ var uniqueDateEnd = "2015-Feb-06 23:59:59";
 
  }
  // slider end
+ 
+ function drawOilSpillCircles(){
+	 d3.selectAll("circle").remove();
+	 scale_factor = Math.max((1 / Math.pow(2, map.getZoom() - 13))/64, 0.0000002);
+	 sel.append('g')
+	.attr('id','spillParticles')
+	.selectAll('circle')
+	.data(filteredDataForPanel1).enter()
+    .append('circle')
+    .attr('r', 4 * scale_factor)
+    .attr('cx',function(d){return  proj.latLngToLayerPoint(d.latLng).x;})
+    .attr('cy',function(d){return proj.latLngToLayerPoint(d.latLng).y;})
+    .attr('fill',function (d){
+    	if(d["CLEANED"] == 1){
+    		return "red";
+    	} else {
+    	if(d["Status"] == "water column"){
+    		return "brown";
+    	} else if(d["Status"] == "sunk"){
+    		return "blue";
+    	} else if(d["Status"] == "surfaced"){
+    		return "black";
+	    	}
+    	
+	    }
+    	});
+     }
+ 
+ 
+ function drawBoatRampCircles(){
+	 d3.selectAll("circle").remove();
+	 scale_factor = Math.max((1 / Math.pow(2, map.getZoom() - 13))/64, 0.0000002);
+	 sel.append('g')
+	.attr('id','spillParticles')
+	.selectAll('circle')
+	.data(rampsJson).enter()
+    .append('circle')
+    .attr('r', 11 * scale_factor)
+    .attr('cx',function(d){d.x = proj.latLngToLayerPoint(d.latLng).x; return  proj.latLngToLayerPoint(d.latLng).x;})
+    .attr('cy',function(d){d.y = proj.latLngToLayerPoint(d.latLng).y; return proj.latLngToLayerPoint(d.latLng).y;})
+    .attr('fill', function (d){
+    	if(  (onlyBoatRampIds.indexOf(d.properties["ID"])) != -1){
+    		return "red";
+    		} else {
+    		return "green";	    
+    		}   
+    	}) 
+      .on("mouseover", handleMouseOver)
+      .on("mouseout", handleMouseOut)
+      .on("mousemove", handleMouseMove)
+     /*.on("mouseover", function() { 
+    	 d3.select(this).append("text")*/
+    	 .text(function(d) {return d.properties["ID"];})
+     /*})*/
+     }
+ 
+ function handleMouseOver(d, i) {  // Add interactivity
+
+     // Use D3 to select element, change color and size
+     d3.select(this).attr({
+       //fill: "orange",
+       r: 11 * scale_factor * 2
+     });
+
+     // Specify where to put label of text
+     /*sel.append("text")
+     .attr({
+        id: "t" + d.x + "-" + d.y + "-" + i,  // Create an id for text so we can select it later for removing on mouseout
+         x: function() { return proj.latLngToLayerPoint(d.latLng).x - 9; },
+         y: function() { return proj.latLngToLayerPoint(d.latLng).y - 10; }
+     })
+     .attr("font-size",40 * scale_factor)
+     .text(function() {
+       return ["Boat Ramp Id: " + d.properties["ID"]];  // Value of the text
+     });*/
+     applyTooltipTransition(0.9);
+     /*tooltip.attr({
+         x: function() { return proj.latLngToLayerPoint(d.latLng).x - 9; },
+         y: function() { return proj.latLngToLayerPoint(d.latLng).y - 10; }
+     })*/
+     /*sel.append(tooltip)*/
+     console.log(d.x,d.y)
+     var coordinates = [0, 0];
+coordinates = d3.mouse(this);
+//var x = coordinates[0];
+//var y = coordinates[1];
+var x =  d3.event.clientX, y =d3.event.clientY;
+     tooltip.attr("transform","translate(0)")
+     tooltip.html('<div id="divTooltipBoatRampId">' + d.properties["ID"] + '</div><div id="divTooltipBoatRampDetails"><table>' + 
+             '<tr class="trTooltip"><td class="tdFirstTooltip">Exclusion Boom Capacity:</td><td class="tdSecondTooltip">' + d.properties["EBCap"] + '</td></tr>' + 
+             '<tr class="trTooltip"><td class="tdFirstTooltip">Vessel Capacity:</td><td class="tdSecondTooltip">' + d.properties["VesCap"] + '</td></tr>')
+             .style("left", (x - (480 * 1)) + "px")
+             .style("top", ( y - (950 * 1)) + "px");
+              //.style("left", (proj.latLngToLayerPoint(d.latLng).x - (480 * 1)) + "px")
+               // .style("top", ( proj.latLngToLayerPoint(d.latLng).y - (780 * 1)) + "px");
+     
+     /*sel.append(tooltip)*/
+     
+   }
+
+function handleMouseOut(d, i) {
+     // Use D3 to select element, change color back to normal
+     d3.select(this).attr({
+       //fill: "black",
+       r: 11 * scale_factor
+     });
+
+     applyTooltipTransition(0)
+     // Select text by id and then remove
+     //d3.select("#t" + d.x + "-" + d.y + "-" + i).remove();  // Remove text location
+   }
+
+function handleMouseMove(d,i){
+	var mouseCoords = d3.mouse(tooltip.node().parentElement);
+	tooltip
+     .attr("transform", "translate("
+           + (mouseCoords[0]-10) + "," 
+           + (mouseCoords[1] - 10) + ")");
+}
+
+function applyTooltipTransition(newOpacity) {
+    tooltip.transition()
+        .duration(500)
+        .style("opacity", newOpacity);
+}
+ 
+ function getCurrentDateHighlightedRamps(){
+	 filteredDataForRamps = boatRampHighlightData.filter(function(eachDayRamp) {
+   		return (eachDayRamp["date"] ==  developedTimeBoatRamps);
+	});
+	 onlyBoatRampIds = [];
+		 filteredDataForRamps.forEach(function(eachElement){
+			onlyBoatRampIds.push(parseInt(eachElement.boatRampId));
+		 });
+		 onlyBoatRampIds = onlyBoatRampIds.filter(function(elem, index, self) {
+		        return index == self.indexOf(elem);
+		    });
+		 onlyBoatRampIds.sort();
+}
+
 	
  function simulateSpill(){
 // //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -403,6 +493,13 @@ var uniqueDateEnd = "2015-Feb-06 23:59:59";
     	 currentMinutesSelected = "0"+ currentMinutesSelected;
      }
      developedTime = currentYearSelected +"-"+ currentMonthNameSelected+"-"+ currentDaySelected;/* +" "+ currentHoursSelected;*/
+     
+     //for boatRamps
+     if((new Date(selectedDateValue).getMonth()+1)<10){
+ 		developedTimeBoatRampsMonth = "0" + (new Date(selectedDateValue).getMonth()+1);
+ 	}
+ 	developedTimeBoatRamps = currentYearSelected +"-"+ developedTimeBoatRampsMonth +"-"+ currentDaySelected;/* +" "+ currentHoursSelected;*/
+     //forBoatRampsEnd
      filteredDataForPanel1 = dataWithLatLng.filter(function(rowForMonthAndYear) {
      	if(currentSpillType == "water column" || currentSpillType == "surfaced" || currentSpillType == "sunk"){
          return ((rowForMonthAndYear["CURR_TIME"].substring(0,11) ==  developedTime) && (rowForMonthAndYear["STATUS"] == currentSpillType)); //REPLACE CURR_TIME with Current Time if reading from BLOSOM's CSV output
@@ -411,6 +508,9 @@ var uniqueDateEnd = "2015-Feb-06 23:59:59";
 		     	}
 		     });
      drawOilSpillCircles();
+     drawBoatRampCircles();
+     getCurrentDateHighlightedRamps();
+     
      if(heatMapOn){
 	     //heatMap Code
 	     heatMapLatLng = [];
@@ -423,16 +523,10 @@ var uniqueDateEnd = "2015-Feb-06 23:59:59";
 	     heatMapLayerGlobal = L.heatLayer(finalHeatMapCoords, {radius:10,blur:15,maxZoom:5,gradient:{0.143:'#feedde',0.285:'#fdd0a2',0.43:'#fdae6b',0.57:'#fd8d3c',0.71:'#f16913',0.86:'#d94801',1.0:'#8c2d04'}}).addTo(multipleLayerControl);
 	     heatMapLayerGlobal.addTo(multipleLayerControl);
      }
-    /* if(heatMapOn){
- 		$('.leaflet-heatmap-layer').hide();
- 		heatMapOn = false;
- 		simulateSpill();
- 	} else {
- 		$('.leaflet-heatmap-layer').show();
- 		heatMapOn = true;
- 		simulateSpill();
- 	}*/
-		}
+     //boatRampsStart
+     //map.removeLayer(boatRampsLayer);
+     //boatRampsEnd
+ }
  	});
 
  sliderSvgOverlay.addTo(map); 
