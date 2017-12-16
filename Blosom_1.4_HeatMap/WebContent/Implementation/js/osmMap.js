@@ -40,11 +40,17 @@ var boatRampHighlightData;
 var boatRampColor;
 var onlyBoatRampIds = [];
 var toolTipBoatRampColor;
+var svgStarIcon;
 
 $(document).ready(function(){
 	
 	//1
-	loadEntireDataSetInitially();
+ 	d3.csv("data/finalFile3.csv", function (data) {
+ 		dataWithLatLng = data.map(function(d){
+ 		    d.latLng = [+d.LATITUDE,+d.LONGITUDE];//CHANGE TO Latitude and Longitude (only L caps) if reading from CSV output of BLOSOM
+ 		    return d;
+ 		  });
+ 	});
 	
 	//2
 	shp("data/data2.zip").then(function(geojson){
@@ -53,7 +59,6 @@ $(document).ready(function(){
 			    d.latLng = [+d.geometry["coordinates"][1],+d.geometry["coordinates"][0]];//CHANGE TO Latitude and Longitude (only L caps) if reading from CSV output of BLOSOM
 			    return d;
 			  });
-
 	});
 	
 	//2
@@ -65,17 +70,11 @@ $(document).ready(function(){
 			$('.leaflet-heatmap-layer').show();
 			heatMapOn = true;
 		}
-		  
-		});
+	});
 	//3
-	///boatRamp highlighting start
 	d3.csv("data/ResultBoatRampDayWise.csv", function (data) {
 			boatRampHighlightData = data;
-			console.log(boatRampHighlightData);
-			
-		//for the info display of the dots
 		});
-	///boatRamp highlighting end
 	
 	
 	//4
@@ -83,23 +82,8 @@ $(document).ready(function(){
 });
 
 
-
-function loadEntireDataSetInitially(){
- 	d3.csv("data/finalFile3.csv", function (data) {
- 		console.log(data);
- 		dataWithLatLng = data.map(function(d){
- 		    d.latLng = [+d.LATITUDE,+d.LONGITUDE];//CHANGE TO Latitude and Longitude (only L caps) if reading from CSV output of BLOSOM
- 		    return d;
- 		  });
- 		
- 	});
- }
-
-
-
-
 var osmTiles = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png'/*, {attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'}*/),
-thunderForest = L.tileLayer('https://{s}.tile.thunderforest.com/outdoors/{z}/{x}/{y}.png?apikey=7c352c8ff1244dd8b732e349e0b0fe8d'/*, {attribution: 'Maps &copy; <a href="http://www.thunderforest.com">Thunderforest</a>, Data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>'}*/);
+/*thunderForest = L.tileLayer('https://{s}.tile.thunderforest.com/outdoors/{z}/{x}/{y}.png?apikey=7c352c8ff1244dd8b732e349e0b0fe8d', {attribution: 'Maps &copy; <a href="http://www.thunderforest.com">Thunderforest</a>, Data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>'});*/
 
 /*heat = L.heatLayer(finalHeatMapCoords, {radius:20,blur:25,maxZoom:5,gradient:{0.143:'#feedde',0.285:'#fdd0a2',0.43:'#fdae6b',0.57:'#fd8d3c',0.71:'#f16913',0.86:'#d94801',1.0:'#8c2d04'}});*/
 multipleLayerControl  = new L.layerGroup();
@@ -114,7 +98,7 @@ var map = L.map('osmMap', {
     center: [29.1408716,-87.8464683],
     zoom: 8,
     renderer: L.svg(),
-    layers: [osmTiles, thunderForest, multipleLayerControl, boatRampsLayer, divSliderDropDown, cleanedDataLayer]
+    layers: [osmTiles, /*thunderForest,*/ multipleLayerControl, boatRampsLayer, divSliderDropDown, cleanedDataLayer]
   });
 
 
@@ -156,22 +140,17 @@ function getColor(d) {
 
 
 
-var starIcon = L.icon({
+/*var starIcon = L.icon({
     iconUrl: 'images/star2.png',
     iconSize:     [16, 16], // size of the icon
     shadowSize:   [0, 0], // size of the shadow
     iconAnchor:   [0, 0], // point of the icon which will correspond to marker's location
     shadowAnchor: [0, 0],  // the same for the shadow
     popupAnchor:  [0, 0] // point from which the popup should open relative to the iconAnchor
-});
+});*/
 //data to display boat ramps data
 
-
-
-
-
-
-function onEachFeature(feature, layer) {
+/*function onEachFeature(feature, layer) {
     // does this feature have a property named popupContent?
     if (feature.properties && feature.properties.ID && feature.properties.EBCap && feature.properties.VesCap) {
         layer.bindPopup('ID: ' + feature.properties.ID + '<br/>' + 'EB Cap: ' + feature.properties.EBCap + '<br/>' + 'Ves Cap: ' + feature.properties.VesCap);
@@ -180,15 +159,10 @@ function onEachFeature(feature, layer) {
 
 function onEachFeatureCleanedData(feature, layer) {
     // does this feature have a property named popupContent?
-    if (feature.properties && feature.properties.PARCEL_NUM && feature.properties.STATUS /*&& feature.properties.CLEANED*/) {
+    if (feature.properties && feature.properties.PARCEL_NUM && feature.properties.STATUS && feature.properties.CLEANED) {
         layer.bindPopup('<b>Parcel Num:</b> ' + feature.properties.PARCEL_NUM + '<br/>' + '<b>Status:</b> ' + feature.properties.STATUS + '<br/>' + '<b>Cleaned:</b> ' + feature.properties.CLEANED);
     }
-}
-
-/*var tooltip = d3.select("#divslider")
-.append("div")
-.attr("id", "divTooltip")
-.style("opacity", 0);*/
+}*/
 
 var tooltip = d3.select("#divslider").append("div").attr("id", "divTooltip").style("opacity", 0);
 
@@ -223,8 +197,6 @@ sliderSvgOverlay = L.d3SvgOverlay(function(sel, proj){
  var monthAndYear = [];
 var uniqueDateStart = "2015-Feb-01 00:00:00";
 var uniqueDateEnd = "2015-Feb-06 23:59:59";
-
-
 
  // scale function
  var timeScale = d3.time.scale.utc()
@@ -270,15 +242,6 @@ var uniqueDateEnd = "2015-Feb-06 23:59:59";
      .attr("class", "ticks")
  .attr("class", "halo")
  .style("cursor","-webkit-grab");
-
- /*
-	 * svgSlider.append("g") .attr("class", "x axisOver") .attr("transform",
-	 * "translate(0," + sliderHeight / 2 + ")") .call(d3.svg.axis()
-	 * .scale(timeScale) .orient("bottom") .tickFormat(function(d) {return
-	 * formatDateForTicks(d);}) .tickSize(3,2) .ticks(6) .tickPadding(12)
-	 * //.tickValues([null, timeScale.domain()[1]])) //.attr("transform",
-	 * "rotate(45)" ) .style("cursor","default");
-	 */
 
  var brush = d3.svg.brush()
  .x(timeScale)
@@ -363,71 +326,42 @@ var uniqueDateEnd = "2015-Feb-06 23:59:59";
  
  
  function drawBoatRampCircles(){
-	 d3.selectAll("circle").remove();
+	 d3.selectAll("image").remove();
 	 scale_factor = Math.max((1 / Math.pow(2, map.getZoom() - 13))/64, 0.0000002);
 	 sel.append('g')
-	.attr('id','spillParticles')
-	.selectAll('circle')
+	.attr('id','boatRampLocations')
+	.selectAll('image')
 	.data(rampsJson).enter()
-    .append('circle')
-    .attr('r', 11 * scale_factor)
-    .attr('cx',function(d){d.x = proj.latLngToLayerPoint(d.latLng).x; return  proj.latLngToLayerPoint(d.latLng).x;})
-    .attr('cy',function(d){d.y = proj.latLngToLayerPoint(d.latLng).y; return proj.latLngToLayerPoint(d.latLng).y;})
-    .attr('fill', function (d){
-    	if(  (onlyBoatRampIds.indexOf(d.properties["ID"])) != -1){
-    		//toolTipBoatRampColor = "red";
-    		return "red";
-    		} else {
-    		//toolTipBoatRampColor = "forestgreen";
-    		return "forestgreen";	    
-    		}   
-    	}) 
+    .append('svg:image')
+    .attr("xlink:href", function(d){if((onlyBoatRampIds.indexOf(d.properties["ID"])) != -1){
+		return "images/star-red.png";
+	} else {
+		return "images/star2.png";	    
+	}   })
+    .attr("width", (36* scale_factor).toString()+"px")
+    .attr("height", (36 * scale_factor).toString()+"px")
+    .style("cursor","default")
+    //.attr('r', 11 * scale_factor)
+    .attr('x',function(d){d.x = proj.latLngToLayerPoint(d.latLng).x; return  proj.latLngToLayerPoint(d.latLng).x;})
+    .attr('y',function(d){d.y = proj.latLngToLayerPoint(d.latLng).y; return proj.latLngToLayerPoint(d.latLng).y;})
       .on("mouseover", handleMouseOver)
       .on("mouseout", handleMouseOut)
-      .on("mousemove", handleMouseMove)
-     /*.on("mouseover", function() { 
-    	 d3.select(this).append("text")*/
-    	 .text(function(d) {return d.properties["ID"];})
-     /*})*/
+
      }
  
- function handleMouseOver(d, i) {  // Add interactivity
-
-     // Use D3 to select element, change color and size
+ function handleMouseOver(d, i) {  
      d3.select(this).attr({
-       //fill: "orange",
        r: 11 * scale_factor * 2
      });
 
-     // Specify where to put label of text
-     /*sel.append("text")
-     .attr({
-        id: "t" + d.x + "-" + d.y + "-" + i,  // Create an id for text so we can select it later for removing on mouseout
-         x: function() { return proj.latLngToLayerPoint(d.latLng).x - 9; },
-         y: function() { return proj.latLngToLayerPoint(d.latLng).y - 10; }
-     })
-     .attr("font-size",40 * scale_factor)
-     .text(function() {
-       return ["Boat Ramp Id: " + d.properties["ID"]];  // Value of the text
-     });*/
      applyTooltipTransition(0.9);
-     /*tooltip.attr({
-         x: function() { return proj.latLngToLayerPoint(d.latLng).x - 9; },
-         y: function() { return proj.latLngToLayerPoint(d.latLng).y - 10; }
-     })*/
-     /*sel.append(tooltip)*/
+ 
  	if(  (onlyBoatRampIds.indexOf(d.properties["ID"])) != -1){
 		toolTipBoatRampColor = "red";
 		} else {
-		toolTipBoatRampColor = "forestgreen";
+		toolTipBoatRampColor = "#04A7ED";
 		} 
-     
- /*    console.log(d.x,d.y)
-     var coordinates = [0, 0];
-coordinates = d3.mouse(this);
-//var x = coordinates[0];
-//var y = coordinates[1];
-*/
+
  	var x =  d3.event.clientX, y =d3.event.clientY;
      tooltip.attr("transform","translate(0)")
      tooltip.html('<div id="divTooltipBoatRampId" style="color:'+toolTipBoatRampColor+'">' + d.properties["ID"] + '</div><div id="divTooltipBoatRampDetails"><table>' + 
@@ -437,30 +371,16 @@ coordinates = d3.mouse(this);
              .style("top", ( y - (955 * 1)) + "px");
               //.style("left", (proj.latLngToLayerPoint(d.latLng).x - (480 * 1)) + "px")
                // .style("top", ( proj.latLngToLayerPoint(d.latLng).y - (780 * 1)) + "px");
-     
-     /*sel.append(tooltip)*/
-     
    }
 
 function handleMouseOut(d, i) {
-     // Use D3 to select element, change color back to normal
      d3.select(this).attr({
-       //fill: "black",
        r: 11 * scale_factor
      });
 
      applyTooltipTransition(0)
-     // Select text by id and then remove
-     //d3.select("#t" + d.x + "-" + d.y + "-" + i).remove();  // Remove text location
    }
 
-function handleMouseMove(d,i){
-	var mouseCoords = d3.mouse(tooltip.node().parentElement);
-	tooltip
-     .attr("transform", "translate("
-           + (mouseCoords[0]-10) + "," 
-           + (mouseCoords[1] - 10) + ")");
-}
 
 function applyTooltipTransition(newOpacity) {
     tooltip.transition()
@@ -533,9 +453,7 @@ function applyTooltipTransition(newOpacity) {
 	     heatMapLayerGlobal = L.heatLayer(finalHeatMapCoords, {radius:10,blur:15,maxZoom:5,gradient:{0.143:'#feedde',0.285:'#fdd0a2',0.43:'#fdae6b',0.57:'#fd8d3c',0.71:'#f16913',0.86:'#d94801',1.0:'#8c2d04'}}).addTo(multipleLayerControl);
 	     heatMapLayerGlobal.addTo(multipleLayerControl);
      }
-     //boatRampsStart
-     //map.removeLayer(boatRampsLayer);
-     //boatRampsEnd
+
  }
  	});
 
@@ -544,13 +462,13 @@ function applyTooltipTransition(newOpacity) {
 
  var baseLayers = {
 	        "Default OSM": osmTiles,
-	        "Thunderforest": thunderForest
+	        /*"Thunderforest": thunderForest*/
 	      };
 
 	var groupedOverlays = {
 	          /*"HeatMap": multipleLayerControl,*/
-	          "Boat Ramps": boatRampsLayer,
-	          "CleanedData": cleanedDataLayer
+	          /*"Boat Ramps": boatRampsLayer,
+	          "CleanedData": cleanedDataLayer*/
 	      };
 
 	L.control.layers(baseLayers, groupedOverlays).addTo(map); 	
