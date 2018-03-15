@@ -6,11 +6,36 @@ html, body
 	padding:0;
 }
 
-#osmMap 
+#osmMap1 
 {
-	height:100%;
-	width: 100%; 
+	height:50%;
+	width: 50%; 
 	z-index:1;
+	float: left;
+}
+
+#osmMap2 
+{
+	height:50%;
+	width: 50%; 
+	z-index:1;
+	float: left;
+}
+
+#osmMap3 
+{
+	height:50%;
+	width: 50%; 
+	z-index:1;
+	float: left;
+}
+
+#osmMap4 
+{
+	height:50%;
+	width: 50%; 
+	z-index:1;
+	float: left;
 }
 
 #divslider {
@@ -27,6 +52,7 @@ html, body
 #spillTypeSelector {
 	float:left;
 	width: 14%;
+	margin-top: 6%;
 }
 
 
@@ -132,4 +158,16 @@ html, body
 .info h4 { 
 	margin: 0 0 5px; 
 	color: #777; 
+ }
+ 
+ .cleanUp{
+    width: 9%;
+    margin-left: 87.6%;
+    margin-top: 21%;
+    position: absolute;
+ }
+ 
+ #mapCollection{
+     width: 100%;
+    height: 100%;
  }
