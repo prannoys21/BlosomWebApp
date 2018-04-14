@@ -8,34 +8,39 @@ html, body
 
 #osmMap1 
 {
-	height:50%;
-	width: 50%; 
+	height:49.5%;
+	width: 49.5%; 
 	z-index:1;
 	float: left;
+	border-right: 1px solid black;
+	border-bottom: 1px solid black;
 }
 
 #osmMap2 
 {
-	height:50%;
-	width: 50%; 
+	height:49.5%;
+	width: 49.5%; 
 	z-index:1;
 	float: left;
+	border-bottom: 1px solid black;
 }
 
 #osmMap3 
 {
-	height:50%;
-	width: 50%; 
+	height:49.5%;
+	width: 49.5%; 
 	z-index:1;
 	float: left;
+	border-right: 1px solid black;
 }
 
 #osmMap4 
 {
-	height:50%;
-	width: 50%; 
+	height:49.5%;
+	width: 49.5%; 
 	z-index:1;
 	float: left;
+	border-left:1px solid black;
 }
 
 #divslider {
@@ -171,3 +176,4 @@ html, body
      width: 100%;
     height: 100%;
  }
+ 

@@ -1,9 +1,29 @@
+/*var aaaaa;
+var bbbbb;
+var differenceArr;
+
+aaaaa = new Set([1,2,3,4,5,6,7,8,9,10]);
+bbbbb = new Set([4,3,2]);
+differenceArr = new Set([...aaaaa].filter(x => !bbbbb.has(x)));
+var iteratorrrrr = differenceArr.entries();
+for (let entry of iteratorrrrr){
+	console.log(entry);
+}
+differenceArr.forEach(function(data){
+	console.log(data);
+})*/
+
+var uniqueDateStart;
+var uniqueDateEnd;
+
 var dataWithLatLng=[];
+
 var dataCut75=[];
 var dataCut80=[];
 var dataCut85=[];
 var dataCut90=[];
 var dataCut95=[];
+
 var sliderSvgOverlay;
 var sliderSvgOverlay2;
 var sliderSvgOverlay3;
@@ -27,10 +47,12 @@ var baseLayers4;
 var mapWidth = 50, mapHeight = 50;
 var circleRadius = 2;
 var svgMap = d3.select("#svgmap").attr("width", mapWidth).attr("height", mapHeight);
+
 var formatDate = d3.time.format("%d %b %H:%M %p");
 var formatDateForTicks = d3.time.format("%d %b");
 var formatDateForMapCreation = d3.time.format("%Y-%b-%d");
 var formatDateForBoatRamps= d3.time.format("%Y-%m-%d");
+
 var currentDateSelected;
 var currentMonthSelected;
 var currentYearSelected;
@@ -60,14 +82,37 @@ var blackColor = "black"
 			var sampleStufff;
 var spillDropDownMap = {};
 var firsTimeLoadSlider = true;
+var firsTimeDrawBoatRamps = true;
 
 var heatMapOn = true;
 var heatMapLatLng = [];
+var heatMapLatLng2 = [];
+var heatMapLatLng3 = [];
+var heatMapLatLng4 = [];
+
+var heatMapLatLngCleaned = [];
+var heatMapLatLngCleaned2 = [];
+var heatMapLatLngCleaned3 = [];
+var heatMapLatLngCleaned4 = [];
+
 var finalHeatMapCoords = [];
+var finalHeatMapCoords2 = [];
+var finalHeatMapCoords3 = [];
+var finalHeatMapCoords4 = [];
+
+var finalHeatMapCoordsCleaned = [];
+var finalHeatMapCoordsCleaned2 = [];
+var finalHeatMapCoordsCleaned3 = [];
+var finalHeatMapCoordsCleaned4 = [];
+
 var heatMapLayerGlobal = L.heatLayer();
+var heatMapLayerGlobalCleaned = L.heatLayer();
 var heatMapLayerGlobal2 = L.heatLayer();
+var heatMapLayerGlobalCleaned2 = L.heatLayer();
 var heatMapLayerGlobal3 = L.heatLayer();
+var heatMapLayerGlobalCleaned3 = L.heatLayer();
 var heatMapLayerGlobal4 = L.heatLayer();
+var heatMapLayerGlobalCleaned4 = L.heatLayer();
 
 var multipleLayerControl;
 var multipleLayerControl2;
@@ -80,6 +125,7 @@ var geojsonMarkerOptions;
 var rampsJson = [];
 var impactJson = [];
 var impactJson2 = [];
+var esiGom = [];
 var developedTimeBoatRamps;
 var developedTimeBoatRampsMonth;
 var boatRampHighlightData1;
@@ -92,6 +138,19 @@ var boatRampHighlightDataCut80;
 var boatRampHighlightDataCut85;
 var boatRampHighlightDataCut90;
 var boatRampHighlightDataCut95;
+
+var boatRampHighlightMap75 = new Map();
+var boatRampHighlightMap80 = new Map();
+var boatRampHighlightMap85 = new Map();
+var boatRampHighlightMap90 = new Map();
+var boatRampHighlightMap95 = new Map();
+
+var boatRampHighlightMap1 = new Map();
+var boatRampHighlightMap2 = new Map();
+var boatRampHighlightMap3 = new Map();
+var boatRampHighlightMap4 = new Map();
+
+
 var boatRampColor;
 
 var onlyBoatRampIds1 = [];
@@ -119,28 +178,64 @@ var finalFileMap2;
 var finalFileMap3;
 var finalFileMap4;
 
+var esiGomLines;
+
 var dataMap75 = new Map();
 var dataMap80 = new Map();
 var dataMap85 = new Map();
 var dataMap90 = new Map();
 var dataMap95 = new Map();
+
 var startDateFromCsv;
 var endDateFromCsv;
 var modelRuntimeFromCsv;
 var blowoutDurationFromCsv;
 var onlyFilterIGCIUnique = [];
 
+var currentBoatramps1;
+var currentBoatramps2;
+var currentBoatramps3;
+var currentBoatramps4;
+
+var rampsJsonSet;
+var rampsJsonArr = [];
+
+var activeBoatRamps1;
+var activeBoatRamps2;
+var activeBoatRamps3;
+var activeBoatRamps4;
+
+var inactiveRamps1;
+var inactiveRamps2;
+var inactiveRamps3;
+var inactiveRamps4;
+
 $(document).ready(function(){
-	d3.csv("data/ImportantDates.csv", function (data) {
-		startDateFromCsv = data[0]["StartDate"];
-		endDateFromCsv = data[0]["EndDate"];
-		modelRuntimeFromCsv = data[0]["ModelRuntime"];
-		blowoutDurationFromCsv = data[0]["BlowoutDuration"];
-	});
+	
+	
+
+$("#popup1").hide();
+console.log("1");
+
+d3.csv("data/ImportantDates.csv", function (data) {
+	console.log("2");
+	$(".se-pre-con").show();
+	$(".se-pre-con").fadeOut("slow");
+	startDateFromCsv = data[0]["StartDate"];
+	endDateFromCsv = data[0]["EndDate"];
+	modelRuntimeFromCsv = data[0]["ModelRuntime"];
+	blowoutDurationFromCsv = data[0]["BlowoutDuration"];
+});
 
 //	1
+	$(".se-pre-con").show();
+	$(".se-pre-con").fadeOut("slow");
 	promises[0] = new Promise(function(resolve, reject) {
+
 		d3.csv("data/finalFile75.0.csv", function (data) {
+			console.log("3");
+			$(".se-pre-con").show();
+			$(".se-pre-con").fadeOut("slow");
 
 			dataCut75 = data.map(function(d){
 				d.latLng = [+d.LATITUDE,+d.LONGITUDE];
@@ -157,10 +252,15 @@ $(document).ready(function(){
 			resolve();
 		});
 	});
-
+	$(".se-pre-con").show();
+	$(".se-pre-con").fadeOut("slow");
 	// 2
 	promises[1] = new Promise(function(resolve, reject) {
+	
 		d3.csv("data/finalFile80.0.csv", function (data) {
+			console.log("4");
+			$(".se-pre-con").show();
+			$(".se-pre-con").fadeOut("slow");
 			dataCut80 = data.map(function(d){
 				d.latLng = [+d.LATITUDE,+d.LONGITUDE];
 				return d;
@@ -178,8 +278,14 @@ $(document).ready(function(){
 	});
 
 	// 3
+	$(".se-pre-con").show();
+	$(".se-pre-con").fadeOut("slow");
 	promises[2] = new Promise(function(resolve, reject) {
+
 		d3.csv("data/finalFile85.0.csv", function (data) {
+			console.log("5");
+			$(".se-pre-con").show();
+			$(".se-pre-con").fadeOut("slow");
 			dataCut85 = data.map(function(d){
 				d.latLng = [+d.LATITUDE,+d.LONGITUDE];
 				return d;
@@ -197,8 +303,14 @@ $(document).ready(function(){
 	});
 
 	// 4
+	$(".se-pre-con").show();
+	$(".se-pre-con").fadeOut("slow");
 	promises[3] = new Promise(function(resolve, reject) {
+		
 		d3.csv("data/finalFile90.0.csv", function (data) {
+			console.log("6");
+			$(".se-pre-con").show();
+			$(".se-pre-con").fadeOut("slow");
 			dataCut90 = data.map(function(d){
 				d.latLng = [+d.LATITUDE,+d.LONGITUDE];
 				return d;
@@ -216,8 +328,14 @@ $(document).ready(function(){
 	});
 
 	// 5
+	$(".se-pre-con").show();
+	$(".se-pre-con").fadeOut("slow");
 	promises[4] = new Promise(function(resolve, reject) {
+
 		d3.csv("data/finalFile95.0.csv", function (data) {
+			console.log("7");
+			$(".se-pre-con").show();
+			$(".se-pre-con").fadeOut("slow");
 			dataWithLatLng = data.map(function(d){
 				d.latLng = [+d.LATITUDE,+d.LONGITUDE];
 				return d;
@@ -242,69 +360,201 @@ $(document).ready(function(){
 
 	// 6 BOAT RAMPS DATA
 	promises[5] = new Promise(function(resolve, reject) {
+		
 		shp("data/BoatRamps.zip").then(function(geojson){
+			console.log("8");
+			$(".se-pre-con").show();
+			$(".se-pre-con").fadeOut("slow");
 			// rampsJson = geojson;
 			rampsJson = geojson.features.map(function(d){
 				d.latLng = [+d.geometry["coordinates"][1],+d.geometry["coordinates"][0]];
 				return d;
 			});
+			rampsJson.forEach(function(eachRampJson){
+				rampsJsonArr.push(eachRampJson.properties["RampID"]);
+			})
+			rampsJsonSet = new Set(rampsJsonArr);
 			resolve();
 		});
 	});
 
 
 	// ////////////////////
+	
 	promises[6] = new Promise(function(resolve, reject) {
+	
 		shp("data/impact2.zip").then(function(geojson){
-			impactJson = JSON.stringify(geojson);
+			console.log("9");
+			$(".se-pre-con").show();
+			$(".se-pre-con").fadeOut("slow");
+			/*impactJson = JSON.stringify(geojson);*/
+			impactJson = geojson.features.map(function(d){
+				d.latLng = [+d.geometry["coordinates"][1],+d.geometry["coordinates"][0]];
+				return d;
+			});
 			resolve();
 		});
 	});
+	
+/*	promises[7] = new Promise(function(resolve, reject) {
+		
+		shp("data/ESI_GOM.zip").then(function(geojson){
+			console.log("9_ESI");
+			$(".se-pre-con").show();
+			$(".se-pre-con").fadeOut("slow");
+			//esiGom  = JSON.stringify(geojson);
+			esiGom = geojson.features.map(function(d){
+				d.latLng = [+d.geometry["coordinates"][1],+d.geometry["coordinates"][0]];
+				return d;
+			});
+			//console.log(JSON.stringify(geojson));
+			$(".se-pre-con").show();
+			$(".se-pre-con").fadeOut("slow");
+			resolve();
+		});
+	});*/
 
 	// 7
 
 
 	// 9
-	d3.csv("data/ResultBoatRampDayWise75.0.csv", function (data) {
+	promises[7] = new Promise(function(resolve, reject) {
+		
+	d3.csv("data/ResultBoatRampDayWise75.0_unique.csv", function (data) {
+		$(".se-pre-con").show();
+		$(".se-pre-con").fadeOut("slow");
+		console.log("10");
 		boatRampHighlightDataCut75 = data;
+		
+		var myDate  = new Date(startDateFromCsv); 
+		//add one more day to this since the boat ramp highlighting starts from day 2
+		/*var onlyDates = [];*/
+		for (var i = 0; i< modelRuntimeFromCsv ; i++){
+			boatRampHighlightMap75.set(formatDateForBoatRamps(myDate), boatRampHighlightDataCut75.filter(function(rowForMonthAndYear) {
+				return rowForMonthAndYear["date"] == formatDateForBoatRamps(myDate);
+			}) );
+			myDate.setDate(myDate.getDate() + 1);	
+		}
+		
+		
+		resolve();
+	});
 	});
 
 	// 10
-	d3.csv("data/ResultBoatRampDayWise80.0.csv", function (data) {
+	promises[8] = new Promise(function(resolve, reject) {
+		
+	d3.csv("data/ResultBoatRampDayWise80.0_unique.csv", function (data) {
+		$(".se-pre-con").show();
+		$(".se-pre-con").fadeOut("slow");
+		console.log("11");
 		boatRampHighlightDataCut80 = data;
+		
+		var myDate  = new Date(startDateFromCsv); 
+		//add one more day to this since the boat ramp highlighting starts from day 2
+		/*var onlyDates = [];*/
+		for (var i = 0; i< modelRuntimeFromCsv ; i++){
+			boatRampHighlightMap80.set(formatDateForBoatRamps(myDate), boatRampHighlightDataCut80.filter(function(rowForMonthAndYear) {
+				return rowForMonthAndYear["date"] == formatDateForBoatRamps(myDate);
+			}) );
+			myDate.setDate(myDate.getDate() + 1);
+		}
+		
+		
+		resolve();
+	});
 	});
 
 	// 11
-	d3.csv("data/ResultBoatRampDayWise85.0.csv", function (data) {
+	promises[9] = new Promise(function(resolve, reject) {
+		
+	d3.csv("data/ResultBoatRampDayWise85.0_unique.csv", function (data) {
+		$(".se-pre-con").show();
+		$(".se-pre-con").fadeOut("slow");
+		console.log("12");
 		boatRampHighlightDataCut85 = data;
+		
+		var myDate  = new Date(startDateFromCsv); 
+		//add one more day to this since the boat ramp highlighting starts from day 2
+		/*var onlyDates = [];*/
+		for (var i = 0; i< modelRuntimeFromCsv ; i++){
+			boatRampHighlightMap85.set(formatDateForBoatRamps(myDate), boatRampHighlightDataCut85.filter(function(rowForMonthAndYear) {
+				return rowForMonthAndYear["date"] == formatDateForBoatRamps(myDate);
+			}) );
+			myDate.setDate(myDate.getDate() + 1);
+		}
+		
+		
+		resolve();
+	});
 	});
 
 	// 12
-	d3.csv("data/ResultBoatRampDayWise90.0.csv", function (data) {
+	promises[10] = new Promise(function(resolve, reject) {
+		
+	d3.csv("data/ResultBoatRampDayWise90.0_unique.csv", function (data) {
+		$(".se-pre-con").show();
+		$(".se-pre-con").fadeOut("slow");
+		console.log("13");
 		boatRampHighlightDataCut90 = data;
+		var myDate  = new Date(startDateFromCsv); 
+		//add one more day to this since the boat ramp highlighting starts from day 2
+		/*var onlyDates = [];*/
+		for (var i = 0; i< modelRuntimeFromCsv ; i++){
+			boatRampHighlightMap90.set(formatDateForBoatRamps(myDate), boatRampHighlightDataCut90.filter(function(rowForMonthAndYear) {
+				return rowForMonthAndYear["date"] == formatDateForBoatRamps(myDate);
+			}) );
+			myDate.setDate(myDate.getDate() + 1);
+		}
+		
+		
+		resolve();
+	});
 	});
 
 	// 13
-	promises[7] = new Promise(function(resolve, reject) {
-		d3.csv("data/ResultBoatRampDayWise95.0.csv", function (data) {
+	promises[11] = new Promise(function(resolve, reject) {
+	
+		d3.csv("data/ResultBoatRampDayWise95.0_unique.csv", function (data) {
+			$(".se-pre-con").show();
+			$(".se-pre-con").fadeOut("slow");
+			console.log("14");
 			boatRampHighlightData1 = data;
 			boatRampHighlightData2 = data;
 			boatRampHighlightData3 = data;
 			boatRampHighlightData4 = data;
 			boatRampHighlightDataCut95 = boatRampHighlightData1;
+			
+			var myDate  = new Date(startDateFromCsv); 
+			//add one more day to this since the boat ramp highlighting starts from day 2
+			/*var onlyDates = [];*/
+			for (var i = 0; i< modelRuntimeFromCsv ; i++){
+				boatRampHighlightMap95.set(formatDateForBoatRamps(myDate), boatRampHighlightDataCut95.filter(function(rowForMonthAndYear) {
+					return rowForMonthAndYear["date"] == formatDateForBoatRamps(myDate);
+				}) );
+				myDate.setDate(myDate.getDate() + 1);
+			}
+			
+			
 			resolve();
 		});
 	});
-
-
-	// 15
-	d3.json("data/impact.json", function(data) { 
-		impactJson2 = data.features; 
-	});
-
+	
+	
+	boatRampHighlightMap1 = boatRampHighlightMap95;
+	boatRampHighlightMap2 = boatRampHighlightMap95;
+	boatRampHighlightMap3 = boatRampHighlightMap95;
+	boatRampHighlightMap4 = boatRampHighlightMap95;
+	
+	
 
 	// 18
+	$(".se-pre-con").show();
+	$(".se-pre-con").fadeOut("slow");
 	d3.csv("data/SJOilGrid_RequiredColumns_Count_Unique.csv", function (data) {
+		$(".se-pre-con").show();
+		$(".se-pre-con").fadeOut("slow");
+		console.log("16");
 		impactGridCounts = data;
 		impactGridCounts.forEach(function(eachPolygonRow){
 			onlyImpactCounts.push(eachPolygonRow['Count']);
@@ -315,6 +565,9 @@ $(document).ready(function(){
 	});
 
 	Promise.all(promises).then(function(result){
+		$(".se-pre-con").show();
+		$(".se-pre-con").fadeOut("slow");
+		console.log("17");
 		sliderSvgOverlay.drawBoatRampCircles();
 		sliderSvgOverlay.drawOilSpillCircles();
 		sliderSvgOverlay2.drawBoatRampCircles2();
@@ -324,12 +577,14 @@ $(document).ready(function(){
 		sliderSvgOverlay4.drawBoatRampCircles4();
 		sliderSvgOverlay4.drawOilSpillCircles4();
 		canDraw = true;
-		
 		drawImpactGrid();
 		drawImpactGrid2();
 		drawImpactGrid3();
 		drawImpactGrid4();
-		
+		//drawEsiLines();
+		$(".se-pre-con").fadeOut("slow");
+		$(".se-pre-con").hide();
+		console.log("18");
 		groupedOverlays1 = {
 
 				"Impact Grid (Map1)": impactOverlay1
@@ -361,6 +616,9 @@ $(document).ready(function(){
 
 });
 
+function showScenarioInfo(){
+	$("#popup1").show();
+}
 
 
 var defaultOSM = L.tileLayer('https://{s}.tile.thunderforest.com/outdoors/{z}/{x}/{y}.png?apikey=6db8cb757e354777bdf5f25d32416bff'),
@@ -399,7 +657,7 @@ baseLayers4 = {
 		"TransportMap": L.tileLayer('https://{s}.tile.thunderforest.com/transport/{z}/{x}/{y}.png?apikey=6db8cb757e354777bdf5f25d32416bff')
 }
 
-console.log(baseLayers)
+//console.log(baseLayers)
 
 //map declaration
 var map = L.map('osmMap1', {
@@ -430,10 +688,45 @@ var map4 = L.map('osmMap4', {
 	layers: [baseLayers4.DefaultOSM,  baseLayers4.Neighborhood,  baseLayers4.TransportMap, baseLayers4.CycleMap,  multipleLayerControl4]
 });
 
+/*var infoButton = L.control.infoButton({linkTitle: 'About this map', title: '<h2>About this scenario</h2>'}).addTo(map);*/
+/*var helloPopup = L.popup().setContent('Hello World!');
+
+
+L.easyButton('fa-comment', function(btn, map){
+    helloPopup.setLatLng(map.getCenter()).openOn(map);
+}).addTo(map);
+*/
+
 ///////////////////////IMPACT OVERLAY STARTS/////////////////
+
+/*function drawEsiLines(){
+	esiGomLines = L.d3SvgOverlay(function(sel, proj) {
+		var upd2 = sel.selectAll('path').data(esiGom);
+		upd2
+		.enter()
+		.append('path')
+		.attr('class','esiGom')
+		.attr('d', proj.pathFromGeojson)
+		.attr('stroke', 'black')
+		.attr('id', function(d){
+			return "esiGomLine_" + d.properties['OBJECTID'];
+		})
+		.attr('fill', 'red')
+		.attr('fill-opacity', '0.7');
+		upd2.attr('stroke-width', 0.1 / proj.scale);
+		//colorPolygons();
+	});
+	esiGomLines.addTo(map);
+	esiGomLines.addTo(map2);
+	esiGomLines.addTo(map3);
+	esiGomLines.addTo(map4);
+}*/
+
+
+
 function drawImpactGrid(){
 impactOverlay1 = L.d3SvgOverlay(function(sel, proj) {
-	var upd2 = sel.selectAll('path').data(impactJson2);
+	var upd2 = sel.selectAll('path').data(impactJson);
 	upd2
 	.enter()
 	.append('path')
@@ -453,7 +746,7 @@ impactOverlay1.addTo(map);
 }
 function drawImpactGrid2(){
 	impactOverlay2= L.d3SvgOverlay(function(sel, proj) {
-		var upd2 = sel.selectAll('path').data(impactJson2);
+		var upd2 = sel.selectAll('path').data(impactJson);
 		upd2
 		.enter()
 		.append('path')
@@ -474,7 +767,7 @@ function drawImpactGrid2(){
 
 function drawImpactGrid3(){
 		impactOverlay3= L.d3SvgOverlay(function(sel, proj) {
-			var upd2 = sel.selectAll('path').data(impactJson2);
+			var upd2 = sel.selectAll('path').data(impactJson);
 			upd2
 			.enter()
 			.append('path')
@@ -496,7 +789,7 @@ function drawImpactGrid3(){
 
 function drawImpactGrid4(){
 	impactOverlay4= L.d3SvgOverlay(function(sel, proj) {
-			var upd2 = sel.selectAll('path').data(impactJson2);
+			var upd2 = sel.selectAll('path').data(impactJson);
 			upd2
 			.enter()
 			.append('path')
@@ -564,12 +857,20 @@ tooltip: {
 function drawHeatMap1(){
 	if(heatMapOn){
 		heatMapLatLng = [];
+		heatMapLatLngCleaned = []; 
 		map.removeLayer(heatMapLayerGlobal);
-		filteredDataForPanel1.forEach(function(eachRow){
-			heatMapLatLng.push(eachRow['latLng'])
+		map.removeLayer(heatMapLayerGlobalCleaned);
+		finalFileMap1.get(developedTime).forEach(function(eachRow){
+			if(eachRow["CLEANED"]==0){
+				heatMapLatLng.push(eachRow['latLng'])
+			} else {
+				heatMapLatLngCleaned.push(eachRow['latLng']);
+			}
 		});
 		finalHeatMapCoords = heatMapLatLng;
+		finalHeatMapCoordsCleaned = heatMapLatLngCleaned;
 		heatMapLayerGlobal = L.heatLayer(finalHeatMapCoords, {radius:2,blur:2,maxZoom:5,gradient:{0.143:'#feedde',0.285:'#fdd0a2',0.43:'#fdae6b',0.57:'#fd8d3c',0.71:'#f16913',0.86:'#d94801',1.0:'#8c2d04'}}).addTo(multipleLayerControl);
+		heatMapLayerGlobalCleaned = L.heatLayer(finalHeatMapCoordsCleaned, {radius:2,blur:2,maxZoom:5,gradient:{1.0:'green'}}).addTo(multipleLayerControl);
 		
 	} else {
 		map.removeLayer(heatMapLayerGlobal);
@@ -578,13 +879,21 @@ function drawHeatMap1(){
 
 function drawHeatMap2(){
 	if(heatMapOn){
-		heatMapLatLng = [];
+		heatMapLatLng2 = [];
+		heatMapLatLngCleaned2 = [];
 		map2.removeLayer(heatMapLayerGlobal2);
-		filteredDataForPanel2.forEach(function(eachRow){
-			heatMapLatLng.push(eachRow['latLng'])
+		map2.removeLayer(heatMapLayerGlobalCleaned2);
+		finalFileMap2.get(developedTime).forEach(function(eachRow){
+			if(eachRow["CLEANED"]==0){
+				heatMapLatLng2.push(eachRow['latLng'])
+			} else {
+				heatMapLatLngCleaned2.push(eachRow['latLng']);
+			}
 		});
-		finalHeatMapCoords = heatMapLatLng;
-		heatMapLayerGlobal2 = L.heatLayer(finalHeatMapCoords, {radius:2,blur:2,maxZoom:5,gradient:{0.143:'#feedde',0.285:'#fdd0a2',0.43:'#fdae6b',0.57:'#fd8d3c',0.71:'#f16913',0.86:'#d94801',1.0:'#8c2d04'}}).addTo(multipleLayerControl2);
+		finalHeatMapCoords2 = heatMapLatLng2;
+		finalHeatMapCoordsCleaned2 = heatMapLatLngCleaned2;
+		heatMapLayerGlobal2 = L.heatLayer(finalHeatMapCoords2, {radius:2,blur:2,maxZoom:5,gradient:{0.143:'#feedde',0.285:'#fdd0a2',0.43:'#fdae6b',0.57:'#fd8d3c',0.71:'#f16913',0.86:'#d94801',1.0:'#8c2d04'}}).addTo(multipleLayerControl2);
+		heatMapLayerGlobalCleaned2 = L.heatLayer(finalHeatMapCoordsCleaned2, {radius:2,blur:2,maxZoom:5,gradient:{1.0:'green'}}).addTo(multipleLayerControl2);
 		
 	} else {
 		map2.removeLayer(heatMapLayerGlobal2);
@@ -593,13 +902,21 @@ function drawHeatMap2(){
 
 function drawHeatMap3(){
 	if(heatMapOn){
-		heatMapLatLng = [];
+		heatMapLatLng3 = [];
+		heatMapLatLngCleaned3 = [];
 		map3.removeLayer(heatMapLayerGlobal3);
-		filteredDataForPanel3.forEach(function(eachRow){
-			heatMapLatLng.push(eachRow['latLng'])
+		map3.removeLayer(heatMapLayerGlobalCleaned3);
+		finalFileMap3.get(developedTime).forEach(function(eachRow){
+			if(eachRow["CLEANED"]==0){
+				heatMapLatLng3.push(eachRow['latLng'])
+			} else {
+				heatMapLatLngCleaned3.push(eachRow['latLng']);
+			}
 		});
-		finalHeatMapCoords = heatMapLatLng;
-		heatMapLayerGlobal3 = L.heatLayer(finalHeatMapCoords, {radius:2,blur:2,maxZoom:5,gradient:{0.143:'#feedde',0.285:'#fdd0a2',0.43:'#fdae6b',0.57:'#fd8d3c',0.71:'#f16913',0.86:'#d94801',1.0:'#8c2d04'}}).addTo(multipleLayerControl3);
+		finalHeatMapCoords3 = heatMapLatLng3;
+		finalHeatMapCoordsCleaned3 = heatMapLatLngCleaned3;
+		heatMapLayerGlobal3 = L.heatLayer(finalHeatMapCoords3, {radius:2,blur:2,maxZoom:5,gradient:{0.143:'#feedde',0.285:'#fdd0a2',0.43:'#fdae6b',0.57:'#fd8d3c',0.71:'#f16913',0.86:'#d94801',1.0:'#8c2d04'}}).addTo(multipleLayerControl3);
+		heatMapLayerGlobalCleaned3 = L.heatLayer(finalHeatMapCoordsCleaned3, {radius:2,blur:2,maxZoom:5,gradient:{1.0:'green'}}).addTo(multipleLayerControl3);
 		
 	} else {
 		map3.removeLayer(heatMapLayerGlobal3);
@@ -608,13 +925,21 @@ function drawHeatMap3(){
 
 function drawHeatMap4(){
 	if(heatMapOn){
-		heatMapLatLng = [];
+		heatMapLatLng4 = [];
+		heatMapLatLngCleaned4 = [];
 		map4.removeLayer(heatMapLayerGlobal4);
-		filteredDataForPanel4.forEach(function(eachRow){
-			heatMapLatLng.push(eachRow['latLng'])
+		map4.removeLayer(heatMapLayerGlobalCleaned4);
+		finalFileMap4.get(developedTime).forEach(function(eachRow){
+			if(eachRow["CLEANED"]==0){
+				heatMapLatLng4.push(eachRow['latLng'])
+			} else {
+				heatMapLatLngCleaned4.push(eachRow['latLng']);
+			}
 		});
-		finalHeatMapCoords = heatMapLatLng;
-		heatMapLayerGlobal4 = L.heatLayer(finalHeatMapCoords, {radius:2,blur:2,maxZoom:5,gradient:{0.143:'#feedde',0.285:'#fdd0a2',0.43:'#fdae6b',0.57:'#fd8d3c',0.71:'#f16913',0.86:'#d94801',1.0:'#8c2d04'}}).addTo(multipleLayerControl4);
+		finalHeatMapCoords4 = heatMapLatLng4;
+		finalHeatMapCoordsCleaned4 = heatMapLatLngCleaned4;
+		heatMapLayerGlobal4 = L.heatLayer(finalHeatMapCoords4, {radius:2,blur:2,maxZoom:5,gradient:{0.143:'#feedde',0.285:'#fdd0a2',0.43:'#fdae6b',0.57:'#fd8d3c',0.71:'#f16913',0.86:'#d94801',1.0:'#8c2d04'}}).addTo(multipleLayerControl4);
+		heatMapLayerGlobalCleaned4 = L.heatLayer(finalHeatMapCoordsCleaned4, {radius:2,blur:2,maxZoom:5,gradient:{1.0:'green'}}).addTo(multipleLayerControl4);
 		
 	} else {
 		map4.removeLayer(heatMapLayerGlobal4);
@@ -650,81 +975,37 @@ function colorPolygons(){
 		});
 	} 
 	
-	if(filterDataImpactGridCounts.length > 0){
-		filterDataImpactGridCounts.some(function(eachRow2){
-			// $("#Polygon_14193").css("style", "fill : #756bb1");
-			if(eachRow2['Count'] < (overallImpactRange * 0.25)){
-				polygonColor = "#fee5d9";
-				$("#Polygon2_" + (eachRow2['Polygon_ID']).toString()).attr("style", "fill : " + polygonColor);
-				return;
-			} else if ((eachRow2['Count'] >= (overallImpactRange * 0.25)) && (eachRow2['Count'] < (overallImpactRange * 0.50)) ){
-				polygonColor =  '#fcae91';
-				$("#Polygon2_" + (eachRow2['Polygon_ID']).toString()).attr("style", "fill : " + polygonColor);
-				return;
-			} else if ((eachRow2['Count'] >= (overallImpactRange * 0.50))  && (eachRow2['Count'] < (overallImpactRange * 0.75 )) ){
-				polygonColor =  '#fb6a4a';
-				$("#Polygon2_" + (eachRow2['Polygon_ID']).toString()).attr("style", "fill : " + polygonColor);
-				return;
-			}  else if ((eachRow2['Count'] >= (overallImpactRange * 0.75))  && (eachRow2['Count'] < (overallImpactRange)) ){
-				polygonColor =  '#cb181d';
-				$("#Polygon2_" + (eachRow2['Polygon_ID']).toString()).attr("style", "fill : " + polygonColor);
-				return;
-			}  
-		});
-	}
-	
-	if(filterDataImpactGridCounts.length > 0){
-		filterDataImpactGridCounts.some(function(eachRow2){
-			// $("#Polygon_14193").css("style", "fill : #756bb1");
-			if(eachRow2['Count'] < (overallImpactRange * 0.25)){
-				polygonColor = "#fee5d9";
-				$("#Polygon3_" + (eachRow2['Polygon_ID']).toString()).attr("style", "fill : " + polygonColor);
-				return;
-			} else if ((eachRow2['Count'] >= (overallImpactRange * 0.25)) && (eachRow2['Count'] < (overallImpactRange * 0.50)) ){
-				polygonColor =  '#fcae91';
-				$("#Polygon3_" + (eachRow2['Polygon_ID']).toString()).attr("style", "fill : " + polygonColor);
-				return;
-			} else if ((eachRow2['Count'] >= (overallImpactRange * 0.50))  && (eachRow2['Count'] < (overallImpactRange * 0.75 )) ){
-				polygonColor =  '#fb6a4a';
-				$("#Polygon3_" + (eachRow2['Polygon_ID']).toString()).attr("style", "fill : " + polygonColor);
-				return;
-			}  else if ((eachRow2['Count'] >= (overallImpactRange * 0.75))  && (eachRow2['Count'] < (overallImpactRange)) ){
-				polygonColor =  '#cb181d';
-				$("#Polygon3_" + (eachRow2['Polygon_ID']).toString()).attr("style", "fill : " + polygonColor);
-				return;
-			}  
-		});
-	}
-
-	
-	if(filterDataImpactGridCounts.length > 0){
-		filterDataImpactGridCounts.some(function(eachRow2){
-			// $("#Polygon_14193").css("style", "fill : #756bb1");
-			if(eachRow2['Count'] < (overallImpactRange * 0.25)){
-				polygonColor = "#fee5d9";
-				$("#Polygon4_" + (eachRow2['Polygon_ID']).toString()).attr("style", "fill : " + polygonColor);
-				return;
-			} else if ((eachRow2['Count'] >= (overallImpactRange * 0.25)) && (eachRow2['Count'] < (overallImpactRange * 0.50)) ){
-				polygonColor =  '#fcae91';
-				$("#Polygon4_" + (eachRow2['Polygon_ID']).toString()).attr("style", "fill : " + polygonColor);
-				return;
-			} else if ((eachRow2['Count'] >= (overallImpactRange * 0.50))  && (eachRow2['Count'] < (overallImpactRange * 0.75 )) ){
-				polygonColor =  '#fb6a4a';
-				$("#Polygon4_" + (eachRow2['Polygon_ID']).toString()).attr("style", "fill : " + polygonColor);
-				return;
-			}  else if ((eachRow2['Count'] >= (overallImpactRange * 0.75))  && (eachRow2['Count'] < (overallImpactRange)) ){
-				polygonColor =  '#cb181d';
-				$("#Polygon4_" + (eachRow2['Polygon_ID']).toString()).attr("style", "fill : " + polygonColor);
-				return;
-			}  
-		});
-	}
-
 
 	if(filterDataImpactGridCountsComplement.length > 0){
 		filterDataImpactGridCountsComplement.forEach(function(eachRow2){
 			polygonColor = "#43a2ca";
 			$("#Polygon1_" + (eachRow2['Polygon_ID']).toString()).attr("style", "fill : " + polygonColor);
+		});
+	}
+	
+}
+
+function colorPolygons2(){
+	if(filterDataImpactGridCounts.length > 0){
+		filterDataImpactGridCounts.some(function(eachRow2){
+			// $("#Polygon_14193").css("style", "fill : #756bb1");
+			if(eachRow2['Count'] < (overallImpactRange * 0.25)){
+				polygonColor = "#fee5d9";
+				$("#Polygon2_" + (eachRow2['Polygon_ID']).toString()).attr("style", "fill : " + polygonColor);
+				return;
+			} else if ((eachRow2['Count'] >= (overallImpactRange * 0.25)) && (eachRow2['Count'] < (overallImpactRange * 0.50)) ){
+				polygonColor =  '#fcae91';
+				$("#Polygon2_" + (eachRow2['Polygon_ID']).toString()).attr("style", "fill : " + polygonColor);
+				return;
+			} else if ((eachRow2['Count'] >= (overallImpactRange * 0.50))  && (eachRow2['Count'] < (overallImpactRange * 0.75 )) ){
+				polygonColor =  '#fb6a4a';
+				$("#Polygon2_" + (eachRow2['Polygon_ID']).toString()).attr("style", "fill : " + polygonColor);
+				return;
+			}  else if ((eachRow2['Count'] >= (overallImpactRange * 0.75))  && (eachRow2['Count'] < (overallImpactRange)) ){
+				polygonColor =  '#cb181d';
+				$("#Polygon2_" + (eachRow2['Polygon_ID']).toString()).attr("style", "fill : " + polygonColor);
+				return;
+			}  
 		});
 	}
 	
@@ -734,13 +1015,65 @@ function colorPolygons(){
 			$("#Polygon2_" + (eachRow2['Polygon_ID']).toString()).attr("style", "fill : " + polygonColor);
 		});
 	}
-	
+}
+
+function colorPolygons3(){
+	if(filterDataImpactGridCounts.length > 0){
+		filterDataImpactGridCounts.some(function(eachRow2){
+			// $("#Polygon_14193").css("style", "fill : #756bb1");
+			if(eachRow2['Count'] < (overallImpactRange * 0.25)){
+				polygonColor = "#fee5d9";
+				$("#Polygon3_" + (eachRow2['Polygon_ID']).toString()).attr("style", "fill : " + polygonColor);
+				return;
+			} else if ((eachRow2['Count'] >= (overallImpactRange * 0.25)) && (eachRow2['Count'] < (overallImpactRange * 0.50)) ){
+				polygonColor =  '#fcae91';
+				$("#Polygon3_" + (eachRow2['Polygon_ID']).toString()).attr("style", "fill : " + polygonColor);
+				return;
+			} else if ((eachRow2['Count'] >= (overallImpactRange * 0.50))  && (eachRow2['Count'] < (overallImpactRange * 0.75 )) ){
+				polygonColor =  '#fb6a4a';
+				$("#Polygon3_" + (eachRow2['Polygon_ID']).toString()).attr("style", "fill : " + polygonColor);
+				return;
+			}  else if ((eachRow2['Count'] >= (overallImpactRange * 0.75))  && (eachRow2['Count'] < (overallImpactRange)) ){
+				polygonColor =  '#cb181d';
+				$("#Polygon3_" + (eachRow2['Polygon_ID']).toString()).attr("style", "fill : " + polygonColor);
+				return;
+			}  
+		});
+	}
+
 	if(filterDataImpactGridCountsComplement.length > 0){
 		filterDataImpactGridCountsComplement.forEach(function(eachRow2){
 			polygonColor = "#43a2ca";
 			$("#Polygon3_" + (eachRow2['Polygon_ID']).toString()).attr("style", "fill : " + polygonColor);
 		});
 	}
+}
+
+function colorPolygons4(){
+	
+	if(filterDataImpactGridCounts.length > 0){
+		filterDataImpactGridCounts.some(function(eachRow2){
+			// $("#Polygon_14193").css("style", "fill : #756bb1");
+			if(eachRow2['Count'] < (overallImpactRange * 0.25)){
+				polygonColor = "#fee5d9";
+				$("#Polygon4_" + (eachRow2['Polygon_ID']).toString()).attr("style", "fill : " + polygonColor);
+				return;
+			} else if ((eachRow2['Count'] >= (overallImpactRange * 0.25)) && (eachRow2['Count'] < (overallImpactRange * 0.50)) ){
+				polygonColor =  '#fcae91';
+				$("#Polygon4_" + (eachRow2['Polygon_ID']).toString()).attr("style", "fill : " + polygonColor);
+				return;
+			} else if ((eachRow2['Count'] >= (overallImpactRange * 0.50))  && (eachRow2['Count'] < (overallImpactRange * 0.75 )) ){
+				polygonColor =  '#fb6a4a';
+				$("#Polygon4_" + (eachRow2['Polygon_ID']).toString()).attr("style", "fill : " + polygonColor);
+				return;
+			}  else if ((eachRow2['Count'] >= (overallImpactRange * 0.75))  && (eachRow2['Count'] < (overallImpactRange)) ){
+				polygonColor =  '#cb181d';
+				$("#Polygon4_" + (eachRow2['Polygon_ID']).toString()).attr("style", "fill : " + polygonColor);
+				return;
+			}  
+		});
+	}
+
 	
 	if(filterDataImpactGridCountsComplement.length > 0){
 		filterDataImpactGridCountsComplement.forEach(function(eachRow2){
@@ -750,6 +1083,8 @@ function colorPolygons(){
 	}
 
 }
+
+
 
 
 
@@ -767,35 +1102,40 @@ sliderSvgOverlay = L.d3SvgOverlay(function(sel, proj){
 			finalFileMap1 = dataMap95;
 			//createMapForEachDay();
 			boatRampHighlightData1 = boatRampHighlightDataCut95;
-			getCurrentDateHighlightedRamps();
+			boatRampHighlightMap1 = boatRampHighlightMap95;
+			//getCurrentDateHighlightedRamps();
 			simulateSpill1();
 		} else if ($('#cleanUpSelector1_90').is(':checked')) {
 			// alert("90 is checked");
 			//dataWithLatLng = dataCut90;
 			finalFileMap1 = dataMap90;
 			boatRampHighlightData1 = boatRampHighlightDataCut90;
-			getCurrentDateHighlightedRamps();
+			boatRampHighlightMap1 = boatRampHighlightMap90;
+			//getCurrentDateHighlightedRamps();
 			simulateSpill1();
 		} else if ($('#cleanUpSelector1_85').is(':checked')) {
 			// alert("85 is checked");
 			//dataWithLatLng = dataCut85;
 			finalFileMap1 = dataMap85;
 			boatRampHighlightData1 = boatRampHighlightDataCut85;
-			getCurrentDateHighlightedRamps();
+			boatRampHighlightMap1 = boatRampHighlightMap85;
+			//getCurrentDateHighlightedRamps();
 			simulateSpill1();
 		} else if ($('#cleanUpSelector1_80').is(':checked')) {
 			// alert("80 is checked");
 			//dataWithLatLng = dataCut80;
 			finalFileMap1 = dataMap80;
 			boatRampHighlightData1 = boatRampHighlightDataCut80;
-			getCurrentDateHighlightedRamps();
+			boatRampHighlightMap1 = boatRampHighlightMap80;
+			//getCurrentDateHighlightedRamps();
 			simulateSpill1();
 		} else if ($('#cleanUpSelector1_75').is(':checked')) {
 			// alert("75 is checked");
 			//dataWithLatLng = dataCut75;
 			finalFileMap1 = dataMap75;
 			boatRampHighlightData1 = boatRampHighlightDataCut75;
-			getCurrentDateHighlightedRamps();
+			boatRampHighlightMap1 = boatRampHighlightMap75;
+			//getCurrentDateHighlightedRamps();
 			simulateSpill1();
 		}
 	});
@@ -812,10 +1152,12 @@ sliderSvgOverlay = L.d3SvgOverlay(function(sel, proj){
 		},
 		sliderWidth = 790 - sliderMargin.left - sliderMargin.right,
 		sliderHeight = 150 - sliderMargin.bottom - sliderMargin.top;
+		
+	
 
 		var monthAndYear = [];
-		var uniqueDateStart = "2015-Apr-15 00:00:00";
-		var uniqueDateEnd = "2015-May-28 23:59:59";
+		uniqueDateStart = "2/2/2017 0:00";
+		uniqueDateEnd = "3/3/2017 11:59";
 
 		// scale function
 		var timeScale = d3.time.scale.utc()
@@ -909,7 +1251,22 @@ sliderSvgOverlay = L.d3SvgOverlay(function(sel, proj){
 			lastClick = Date.now();
 			selectedDateValue = brush.extent()[1];
 			selectedDateValue = timeScale.invert(d3.mouse(this)[0]);
+			//console.log("started s1 : " + new Date().getTime());
 			simulateSpill1();
+			//console.log("ended s1 : " + new Date().getTime());
+			
+			//console.log("started s2: " + new Date().getTime());
+			sliderSvgOverlay2.simulateSpill2();
+			//console.log("ended s2: " + new Date().getTime());
+			
+			//console.log("started s3: " + new Date().getTime());
+			sliderSvgOverlay3.simulateSpill3();
+			//console.log("ended s3: " + new Date().getTime());
+			
+			//console.log("started s4 : " + new Date().getTime());
+			sliderSvgOverlay4.simulateSpill4();
+//			/console.log("ended s4: " + new Date().getTime());
+			
 			handle.attr("transform", "translate(" + timeScale(selectedDateValue) + ",0)");
 			handle.select('text').text(formatDate(selectedDateValue));
 		}
@@ -958,22 +1315,44 @@ sliderSvgOverlay = L.d3SvgOverlay(function(sel, proj){
 		});*/
 	}
 
+	
+	function colorBoatRamps1(){
+		currentBoatramps1 = 	boatRampHighlightMap1.get(formatDateForBoatRamps(new Date(selectedDateValue)));
+		var currentBoatrampsArr1 = [];
+		currentBoatramps1.forEach(function(eachRamp){
+			$("#boatRampLocations_1_" + parseInt(eachRamp["boatRampId"]).toString()).attr("href", "images/star-red.png");
+			currentBoatrampsArr1.push(parseInt(eachRamp["boatRampId"]));
+		});
+		
+		activeBoatRamps1 = new Set(currentBoatrampsArr1);
+		
+		inactiveRamps1 = new Set([...rampsJsonSet].filter(x => !activeBoatRamps1.has(x)));
+
+		inactiveRamps1.forEach(function(data){
+			$("#boatRampLocations_1_" + data.toString()).attr("href", "images/star2.png");
+		})
+		
+	}
+	
 
 	this.drawBoatRampCircles = function(){
+		//firsTimeDrawBoatRamps = false;
 		d3.selectAll(".boatRampLocations_1").remove();
 		scale_factor = Math.max((1 / Math.pow(2, map.getZoom() - 13))/64, 0.0000002);
 		sel.append('g')
-		.attr('id','boatRampLocations_1')
 		.attr('class','boatRampLocations_1')
 		.selectAll('image')
 		.data(rampsJson).enter()
 		.append('svg:image')
-		.attr("xlink:href", function(d){if((onlyBoatRampIds1.indexOf(d.properties["ID"])) != -1){
+		.attr("xlink:href", function(d){
+			/*if((onlyBoatRampIds1.indexOf(d.properties["RampID"])) != -1){
 			return "images/star-red.png";
-		} else {
+		} else {*/
 			return "images/star2.png";	    
-		}   })
-		.attr("width", (16* scale_factor).toString()+"px")
+		//}
+		})
+		.attr('id', function (d){return 'boatRampLocations_1_' + d.properties["RampID"]})
+		.attr("width", (16 * scale_factor).toString()+"px")
 		.attr("height", (16 * scale_factor).toString()+"px")
 		.style("cursor","default")
 		// .attr('r', 11 * scale_factor)
@@ -982,6 +1361,11 @@ sliderSvgOverlay = L.d3SvgOverlay(function(sel, proj){
 		.on("mouseover", handleMouseOver)
 		.on("mouseout", handleMouseOut)
 
+		/*if (firsTimeDrawBoatRamps) currentBoatramps1 = boatRampHighlightMap1.get(formatDateForBoatRamps(new Date("2/2/2017 0:00")));
+		else currentBoatramps1 = boatRampHighlightMap1.get(formatDateForBoatRamps(new Date(selectedDateValue)));
+		currentBoatramps1.forEach(function(eachRamp){
+			$("#boatRampLocations_1_" + parseInt(eachRamp["boatRampId"]).toString()).attr("href", "images/star-red.png");
+		});*/
 	}
 
 	function handleMouseOver(d, i) {  
@@ -991,7 +1375,7 @@ sliderSvgOverlay = L.d3SvgOverlay(function(sel, proj){
 
 		applyTooltipTransition(0.9);
 
-		if(  (onlyBoatRampIds1.indexOf(d.properties["ID"])) != -1){
+		if(  (onlyBoatRampIds1.indexOf(d.properties["RampID"])) != -1){
 			toolTipBoatRampColor = "red";
 		} else {
 			toolTipBoatRampColor = "#04A7ED";
@@ -1017,6 +1401,7 @@ sliderSvgOverlay = L.d3SvgOverlay(function(sel, proj){
 	if(canDraw){
 		this.drawOilSpillCircles();
 		this.drawBoatRampCircles();
+		colorBoatRamps1();
 		//filterOilStatusWise();
 	}
 
@@ -1026,7 +1411,7 @@ sliderSvgOverlay = L.d3SvgOverlay(function(sel, proj){
 		.style("opacity", newOpacity);
 	}
 
-	function getCurrentDateHighlightedRamps(){
+/*	function getCurrentDateHighlightedRamps(){
 		filteredDataForRamps1 = boatRampHighlightData1.filter(function(eachDayRamp) {
 			return (eachDayRamp["date"] ==  developedTimeBoatRamps);
 		});
@@ -1038,7 +1423,7 @@ sliderSvgOverlay = L.d3SvgOverlay(function(sel, proj){
 			return index == self.indexOf(elem);
 		});
 		onlyBoatRampIds1.sort();
-	}
+	}*/
 
 
 
@@ -1050,6 +1435,8 @@ sliderSvgOverlay = L.d3SvgOverlay(function(sel, proj){
 		developedTime = formatDateForMapCreation(currentDateSelected);
 		developedTimeBoatRamps = formatDateForBoatRamps(currentDateSelected);
 
+		
+		
 		filteredDataForPanel1 = finalFileMap1.get(developedTime);
 		if(currentSpillType == "water column" || currentSpillType == "surfaced" || currentSpillType == "sunk" || currentSpillType == "beached" ){
 			filteredDataForPanel1 = filteredDataForPanel1.filter(function(rowForMonthAndYear) {
@@ -1057,39 +1444,17 @@ sliderSvgOverlay = L.d3SvgOverlay(function(sel, proj){
 			});
 		}
 		
-		filteredDataForPanel2 = finalFileMap2.get(developedTime);
-		if(currentSpillType == "water column" || currentSpillType == "surfaced" || currentSpillType == "sunk" || currentSpillType == "beached" ){
-			filteredDataForPanel2 = filteredDataForPanel2.filter(function(rowForMonthAndYear) {
-				return rowForMonthAndYear["STATUS"] ==	 currentSpillType;
-			});
-		}
-		
-		filteredDataForPanel3 = finalFileMap3.get(developedTime);
-		if(currentSpillType == "water column" || currentSpillType == "surfaced" || currentSpillType == "sunk" || currentSpillType == "beached" ){
-			filteredDataForPanel3 = filteredDataForPanel3.filter(function(rowForMonthAndYear) {
-				return rowForMonthAndYear["STATUS"] ==	 currentSpillType;
-			});
-		}
-		
-		filteredDataForPanel4 = finalFileMap4.get(developedTime);
-		if(currentSpillType == "water column" || currentSpillType == "surfaced" || currentSpillType == "sunk" || currentSpillType == "beached" ){
-			filteredDataForPanel4 = filteredDataForPanel4.filter(function(rowForMonthAndYear) {
-				return rowForMonthAndYear["STATUS"] ==	 currentSpillType;
-			});
-		}
-		
 		
 		drawHeatMap1();
-		drawHeatMap2();
-		drawHeatMap3();
-		drawHeatMap4();
+	
 		
-
+		//console.log("started coloring: " + new Date().getTime());
+		//sliderSvgOverlay.drawBoatRampCircles();
+		colorBoatRamps1();
+		//console.log("ended coloring: "+  new Date().getTime());
 		
-		getCurrentDateHighlightedRamps();
-		//filterOilStatusWise();
+		//getCurrentDateHighlightedRamps();
 		
-
 		filterDataImpactGridCounts = impactGridCounts.filter(function(rowForMonthAndYear) {
 			var result = (rowForMonthAndYear["CURR_TIME"].substring(0,11) <=  developedTime);
 
@@ -1116,6 +1481,8 @@ sliderSvgOverlay = L.d3SvgOverlay(function(sel, proj){
 				filterDataImpactGridCountsComplement.push(rowForMonthAndYear);
 			}
 		});
+		
+		
 		colorPolygons();
 	}
 
@@ -1137,41 +1504,64 @@ sliderSvgOverlay2 = L.d3SvgOverlay(function(sel, proj){
 			finalFileMap2 = dataMap95;
 			//createMapForEachDay();
 			boatRampHighlightData2 = boatRampHighlightDataCut95;
-			getCurrentDateHighlightedRamps();
-			simulateSpill2();
+			boatRampHighlightMap2 = boatRampHighlightMap95;
+			//getCurrentDateHighlightedRamps2();
+			sliderSvgOverlay2.simulateSpill2();
 		} else if ($('#cleanUpSelector2_90').is(':checked')) {
 			// alert("90 is checked");
 			//dataWithLatLng = dataCut90;
 			finalFileMap2 = dataMap90;
 			boatRampHighlightData2 = boatRampHighlightDataCut90;
-			getCurrentDateHighlightedRamps();
-			simulateSpill2();
+			boatRampHighlightMap2 = boatRampHighlightMap90;
+			//getCurrentDateHighlightedRamps2();
+			sliderSvgOverlay2.simulateSpill2();
 		} else if ($('#cleanUpSelector2_85').is(':checked')) {
 			// alert("85 is checked");
 			//dataWithLatLng = dataCut85;
 			finalFileMap2 = dataMap85;
 			boatRampHighlightData2 = boatRampHighlightDataCut85;
-			getCurrentDateHighlightedRamps();
-			simulateSpill2();
+			boatRampHighlightMap2 = boatRampHighlightMap85;
+			//getCurrentDateHighlightedRamps2();
+			sliderSvgOverlay2.simulateSpill2();
 		} else if ($('#cleanUpSelector2_80').is(':checked')) {
 			// alert("80 is checked");
 			//dataWithLatLng = dataCut80;
 			finalFileMap2 = dataMap80;
 			boatRampHighlightData2 = boatRampHighlightDataCut80;
-			getCurrentDateHighlightedRamps();
-			simulateSpill2();
+			boatRampHighlightMap2 = boatRampHighlightMap80;
+			//getCurrentDateHighlightedRamps2();
+			sliderSvgOverlay2.simulateSpill2();
 		} else if ($('#cleanUpSelector2_75').is(':checked')) {
 			// alert("75 is checked");
 			//dataWithLatLng = dataCut75;
 			finalFileMap2 = dataMap75;
 			boatRampHighlightData2 = boatRampHighlightDataCut75;
-			getCurrentDateHighlightedRamps();
-			simulateSpill2();
+			boatRampHighlightMap2 = boatRampHighlightMap75;
+			//getCurrentDateHighlightedRamps2();
+			sliderSvgOverlay2.simulateSpill2();
 		}
 	});
 
 	this.drawOilSpillCircles2 = function(){
 
+	}
+	
+	function colorBoatRamps2(){
+		currentBoatramps2 = 	boatRampHighlightMap2.get(formatDateForBoatRamps(new Date(selectedDateValue)));
+		var currentBoatrampsArr2 = [];
+		currentBoatramps2.forEach(function(eachRamp){
+			$("#boatRampLocations_2_" + parseInt(eachRamp["boatRampId"]).toString()).attr("href", "images/star-red.png");
+			currentBoatrampsArr2.push(parseInt(eachRamp["boatRampId"]));
+		});
+		
+		activeBoatRamps2 = new Set(currentBoatrampsArr2);
+		
+		inactiveRamps2 = new Set([...rampsJsonSet].filter(x => !activeBoatRamps2.has(x)));
+
+		inactiveRamps2.forEach(function(data){
+			$("#boatRampLocations_2_" + data.toString()).attr("href", "images/star2.png");
+		})
+		
 	}
 
 
@@ -1179,17 +1569,19 @@ sliderSvgOverlay2 = L.d3SvgOverlay(function(sel, proj){
 		d3.selectAll(".boatRampLocations_2").remove();
 		scale_factor = Math.max((1 / Math.pow(2, map2.getZoom() - 13))/64, 0.0000002);
 		sel.append('g')
-		.attr('id','boatRampLocations2')
 		.attr('class','boatRampLocations_2')
 		.selectAll('image')
 		.data(rampsJson).enter()
 		.append('svg:image')
-		.attr("xlink:href", function(d){if((onlyBoatRampIds2.indexOf(d.properties["ID"])) != -1){
+		.attr("xlink:href", function(d){
+			/*if((onlyBoatRampIds1.indexOf(d.properties["RampID"])) != -1){
 			return "images/star-red.png";
-		} else {
+		} else {*/
 			return "images/star2.png";	    
-		}   })
-		.attr("width", (16* scale_factor).toString()+"px")
+		//}
+		})
+		.attr('id', function (d){return 'boatRampLocations_2_' + d.properties["RampID"]})
+		.attr("width", (16 * scale_factor).toString()+"px")
 		.attr("height", (16 * scale_factor).toString()+"px")
 		.style("cursor","default")
 		// .attr('r', 11 * scale_factor)
@@ -1207,7 +1599,7 @@ sliderSvgOverlay2 = L.d3SvgOverlay(function(sel, proj){
 
 		applyTooltipTransition(0.9);
 
-		if(  (onlyBoatRampIds2.indexOf(d.properties["ID"])) != -1){
+		if(  (onlyBoatRampIds2.indexOf(d.properties["RampID"])) != -1){
 			toolTipBoatRampColor = "red";
 		} else {
 			toolTipBoatRampColor = "#04A7ED";
@@ -1233,6 +1625,7 @@ sliderSvgOverlay2 = L.d3SvgOverlay(function(sel, proj){
 	if(canDraw){
 		this.drawOilSpillCircles2();
 		this.drawBoatRampCircles2();
+		colorBoatRamps2();
 		//filterOilStatusWise();
 	}
 
@@ -1242,7 +1635,7 @@ sliderSvgOverlay2 = L.d3SvgOverlay(function(sel, proj){
 		.style("opacity", newOpacity);
 	}
 
-	function getCurrentDateHighlightedRamps(){
+/*	function getCurrentDateHighlightedRamps2(){
 		filteredDataForRamps2 = boatRampHighlightData2.filter(function(eachDayRamp) {
 			return (eachDayRamp["date"] ==  developedTimeBoatRamps);
 		});
@@ -1254,9 +1647,9 @@ sliderSvgOverlay2 = L.d3SvgOverlay(function(sel, proj){
 			return index == self.indexOf(elem);
 		});
 		onlyBoatRampIds2.sort();
-	}
+	}*/
 
-	function simulateSpill2(){
+	this.simulateSpill2 = function(){
 //		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		d3.selectAll("circle").remove();
 		currentSpillType = $('#spillTypeSelector').val();
@@ -1273,9 +1666,43 @@ sliderSvgOverlay2 = L.d3SvgOverlay(function(sel, proj){
 			});
 		}
 		
-		//drawHeatMap2();
+		drawHeatMap2();
 		
-		getCurrentDateHighlightedRamps();
+		//getCurrentDateHighlightedRamps2();
+		//console.log("started coloring 2 : " + new Date().getTime());
+		//sliderSvgOverlay2.drawBoatRampCircles2();
+		colorBoatRamps2();
+		//console.log("ended coloring 2 : "+  new Date().getTime());
+		
+		filterDataImpactGridCounts = impactGridCounts.filter(function(rowForMonthAndYear) {
+			var result = (rowForMonthAndYear["CURR_TIME"].substring(0,11) <=  developedTime);
+
+			if(result)
+				onlyFilterDataImpactGridCountsIds.push(rowForMonthAndYear['Polygon_ID']);
+
+			return result;
+
+		});
+
+		onlyFilterDataImpactGridCountsIds = [];
+		onlyFilterIGCIUnique = [];
+		filterDataImpactGridCounts.forEach(function(eachPolygonRow){
+			onlyFilterDataImpactGridCountsIds.push(eachPolygonRow['Polygon_ID']);
+		});
+
+		$.each(onlyFilterDataImpactGridCountsIds, function(i, el){
+			if($.inArray(el, onlyFilterIGCIUnique) === -1) onlyFilterIGCIUnique.push(el);
+		});
+
+		filterDataImpactGridCountsComplement = [];
+		impactGridCounts.forEach(function(rowForMonthAndYear) {
+			if((rowForMonthAndYear["CURR_TIME"].substring(0,11) >  developedTime) && (onlyFilterIGCIUnique.indexOf(rowForMonthAndYear["Polygon_ID"]) == -1)){
+				filterDataImpactGridCountsComplement.push(rowForMonthAndYear);
+			}
+		});
+		
+		
+		colorPolygons2();
 
 	}
 
@@ -1299,36 +1726,41 @@ sliderSvgOverlay3 = L.d3SvgOverlay(function(sel, proj){
 			finalFileMap3 = dataMap95;
 			//createMapForEachDay();
 			boatRampHighlightData3 = boatRampHighlightDataCut95;
-			getCurrentDateHighlightedRamps();
-			simulateSpill3();
+			boatRampHighlightMap3 = boatRampHighlightMap95;
+			//getCurrentDateHighlightedRamps3();
+			sliderSvgOverlay3.simulateSpill3();
 		} else if ($('#cleanUpSelector3_90').is(':checked')) {
 			// alert("90 is checked");
 			dataWithLatLng = dataCut90;
 			finalFileMap3 = dataMap90;
 			boatRampHighlightData3 = boatRampHighlightDataCut90;
-			getCurrentDateHighlightedRamps();
-			simulateSpill3();
+			boatRampHighlightMap3 = boatRampHighlightMap90;
+			//getCurrentDateHighlightedRamps3();
+			sliderSvgOverlay3.simulateSpill3();
 		} else if ($('#cleanUpSelector3_85').is(':checked')) {
 			// alert("85 is checked");
 			dataWithLatLng = dataCut85;
 			finalFileMap3 = dataMap85;
 			boatRampHighlightData3 = boatRampHighlightDataCut85;
-			getCurrentDateHighlightedRamps();
-			simulateSpill3();
+			boatRampHighlightMap3 = boatRampHighlightMap85;
+			//getCurrentDateHighlightedRamps3();
+			sliderSvgOverlay3.simulateSpill3();
 		} else if ($('#cleanUpSelector3_80').is(':checked')) {
 			// alert("80 is checked");
 			dataWithLatLng = dataCut80;
 			finalFileMap3 = dataMap80;
 			boatRampHighlightData3 = boatRampHighlightDataCut80;
-			getCurrentDateHighlightedRamps();
-			simulateSpill3();
+			boatRampHighlightMap3 = boatRampHighlightMap80;
+			//getCurrentDateHighlightedRamps3();
+			sliderSvgOverlay3.simulateSpill3();
 		} else if ($('#cleanUpSelector3_75').is(':checked')) {
 			// alert("75 is checked");
 			dataWithLatLng = dataCut75;
 			finalFileMap3 = dataMap75;
 			boatRampHighlightData3 = boatRampHighlightDataCut75;
-			getCurrentDateHighlightedRamps();
-			simulateSpill3();
+			boatRampHighlightMap3 = boatRampHighlightMap75;
+			//getCurrentDateHighlightedRamps3();
+			sliderSvgOverlay3.simulateSpill3();
 		}
 	});
 
@@ -1336,22 +1768,42 @@ sliderSvgOverlay3 = L.d3SvgOverlay(function(sel, proj){
 
 	}
 
+	
+	function colorBoatRamps3(){
+		currentBoatramps3 = 	boatRampHighlightMap3.get(formatDateForBoatRamps(new Date(selectedDateValue)));
+		var currentBoatrampsArr3 = [];
+		currentBoatramps3.forEach(function(eachRamp){
+			$("#boatRampLocations_3_" + parseInt(eachRamp["boatRampId"]).toString()).attr("href", "images/star-red.png");
+			currentBoatrampsArr3.push(parseInt(eachRamp["boatRampId"]));
+		});
+		
+		activeBoatRamps3 = new Set(currentBoatrampsArr3);
+		
+		inactiveRamps3 = new Set([...rampsJsonSet].filter(x => !activeBoatRamps3.has(x)));
+
+		inactiveRamps3.forEach(function(data){
+			$("#boatRampLocations_3_" + data.toString()).attr("href", "images/star2.png");
+		})
+		
+	}
 
 	this.drawBoatRampCircles3 = function(){
 		d3.selectAll(".boatRampLocations_3").remove();
 		scale_factor = Math.max((1 / Math.pow(2, map3.getZoom() - 13))/64, 0.0000002);
 		sel.append('g')
-		.attr('id','boatRampLocations3')
 		.attr('class','boatRampLocations_3')
 		.selectAll('image')
 		.data(rampsJson).enter()
 		.append('svg:image')
-		.attr("xlink:href", function(d){if((onlyBoatRampIds3.indexOf(d.properties["ID"])) != -1){
+		.attr("xlink:href", function(d){
+			/*if((onlyBoatRampIds1.indexOf(d.properties["RampID"])) != -1){
 			return "images/star-red.png";
-		} else {
+		} else {*/
 			return "images/star2.png";	    
-		}   })
-		.attr("width", (16* scale_factor).toString()+"px")
+		//}
+		})
+		.attr('id', function (d){return 'boatRampLocations_3_' + d.properties["RampID"]})
+		.attr("width", (16 * scale_factor).toString()+"px")
 		.attr("height", (16 * scale_factor).toString()+"px")
 		.style("cursor","default")
 		// .attr('r', 11 * scale_factor)
@@ -1359,6 +1811,7 @@ sliderSvgOverlay3 = L.d3SvgOverlay(function(sel, proj){
 		.attr('y',function(d){d.y = proj.latLngToLayerPoint(d.latLng).y; return proj.latLngToLayerPoint(d.latLng).y;})
 		.on("mouseover", handleMouseOver)
 		.on("mouseout", handleMouseOut)
+
 
 	}
 
@@ -1369,7 +1822,7 @@ sliderSvgOverlay3 = L.d3SvgOverlay(function(sel, proj){
 
 		applyTooltipTransition(0.9);
 
-		if(  (onlyBoatRampIds3.indexOf(d.properties["ID"])) != -1){
+		if(  (onlyBoatRampIds3.indexOf(d.properties["RampID"])) != -1){
 			toolTipBoatRampColor = "red";
 		} else {
 			toolTipBoatRampColor = "#04A7ED";
@@ -1395,6 +1848,7 @@ sliderSvgOverlay3 = L.d3SvgOverlay(function(sel, proj){
 	if(canDraw){
 		this.drawOilSpillCircles3();
 		this.drawBoatRampCircles3();
+		colorBoatRamps3();
 		//filterOilStatusWise();
 	}
 
@@ -1404,7 +1858,7 @@ sliderSvgOverlay3 = L.d3SvgOverlay(function(sel, proj){
 		.style("opacity", newOpacity);
 	}
 
-	function getCurrentDateHighlightedRamps(){
+/*	function getCurrentDateHighlightedRamps3(){
 		filteredDataForRamps3 = boatRampHighlightData3.filter(function(eachDayRamp) {
 			return (eachDayRamp["date"] ==  developedTimeBoatRamps);
 		});
@@ -1416,9 +1870,9 @@ sliderSvgOverlay3 = L.d3SvgOverlay(function(sel, proj){
 			return index == self.indexOf(elem);
 		});
 		onlyBoatRampIds3.sort();
-	}
+	}*/
 	
-	function simulateSpill3(){
+	this.simulateSpill3 = function(){
 //		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		d3.selectAll("circle").remove();
 		currentSpillType = $('#spillTypeSelector').val();
@@ -1434,8 +1888,45 @@ sliderSvgOverlay3 = L.d3SvgOverlay(function(sel, proj){
 			});
 		}
 		
+		//getCurrentDateHighlightedRamps3();
 		
-		//drawHeatMap3();
+		//console.log("started coloring 3 : " + new Date().getTime());
+		//sliderSvgOverlay3.drawBoatRampCircles3();
+		colorBoatRamps3();
+		//console.log("ended coloring 3 : "+  new Date().getTime());
+		
+		
+		drawHeatMap3();
+		
+		filterDataImpactGridCounts = impactGridCounts.filter(function(rowForMonthAndYear) {
+			var result = (rowForMonthAndYear["CURR_TIME"].substring(0,11) <=  developedTime);
+
+			if(result)
+				onlyFilterDataImpactGridCountsIds.push(rowForMonthAndYear['Polygon_ID']);
+
+			return result;
+
+		});
+
+		onlyFilterDataImpactGridCountsIds = [];
+		onlyFilterIGCIUnique = [];
+		filterDataImpactGridCounts.forEach(function(eachPolygonRow){
+			onlyFilterDataImpactGridCountsIds.push(eachPolygonRow['Polygon_ID']);
+		});
+
+		$.each(onlyFilterDataImpactGridCountsIds, function(i, el){
+			if($.inArray(el, onlyFilterIGCIUnique) === -1) onlyFilterIGCIUnique.push(el);
+		});
+
+		filterDataImpactGridCountsComplement = [];
+		impactGridCounts.forEach(function(rowForMonthAndYear) {
+			if((rowForMonthAndYear["CURR_TIME"].substring(0,11) >  developedTime) && (onlyFilterIGCIUnique.indexOf(rowForMonthAndYear["Polygon_ID"]) == -1)){
+				filterDataImpactGridCountsComplement.push(rowForMonthAndYear);
+			}
+		});
+		
+		
+		colorPolygons3();
 
 	}
 
@@ -1461,36 +1952,41 @@ sliderSvgOverlay4 = L.d3SvgOverlay(function(sel, proj){
 			finalFileMap4 = dataMap95;
 			//createMapForEachDay();
 			boatRampHighlightData4 = boatRampHighlightDataCut95;
-			getCurrentDateHighlightedRamps();
-			simulateSpill4();
+			boatRampHighlightMap4 = boatRampHighlightMap95;
+			//getCurrentDateHighlightedRamps4();
+			sliderSvgOverlay4.simulateSpill4();
 		} else if ($('#cleanUpSelector4_90').is(':checked')) {
 			// alert("90 is checked");
 		//	dataWithLatLng = dataCut90;
 			finalFileMap4 = dataMap90;
 			boatRampHighlightData4 = boatRampHighlightDataCut90;
-			getCurrentDateHighlightedRamps();
-			simulateSpill4();
+			boatRampHighlightMap4 = boatRampHighlightMap90;
+			//getCurrentDateHighlightedRamps4();
+			sliderSvgOverlay4.simulateSpill4();
 		} else if ($('#cleanUpSelector4_85').is(':checked')) {
 			// alert("85 is checked");
 			//dataWithLatLng = dataCut85;
 			finalFileMap4 = dataMap85;
 			boatRampHighlightData4 = boatRampHighlightDataCut85;
-			getCurrentDateHighlightedRamps();
-			simulateSpill4();
+			boatRampHighlightMap4 = boatRampHighlightMap85;
+			//getCurrentDateHighlightedRamps4();
+			sliderSvgOverlay4.simulateSpill4();
 		} else if ($('#cleanUpSelector4_80').is(':checked')) {
 			// alert("80 is checked");
 			//dataWithLatLng = dataCut80;
 			finalFileMap4 = dataMap80;
 			boatRampHighlightData4 = boatRampHighlightDataCut80;
-			getCurrentDateHighlightedRamps();
-			simulateSpill4();
+			boatRampHighlightMap4 = boatRampHighlightMap80;
+			//getCurrentDateHighlightedRamps4();
+			sliderSvgOverlay4.simulateSpill4();
 		} else if ($('#cleanUpSelector4_75').is(':checked')) {
 			// alert("75 is checked");
 			//dataWithLatLng = dataCut75;
 			finalFileMap4 = dataMap75;
 			boatRampHighlightData4 = boatRampHighlightDataCut75;
-			getCurrentDateHighlightedRamps();
-			simulateSpill4();
+			boatRampHighlightMap4 = boatRampHighlightMap75;
+			//getCurrentDateHighlightedRamps4();
+			sliderSvgOverlay4.simulateSpill4();
 		}
 	});
 
@@ -1498,22 +1994,41 @@ sliderSvgOverlay4 = L.d3SvgOverlay(function(sel, proj){
 
 	}
 
+	function colorBoatRamps4(){
+		currentBoatramps4 = 	boatRampHighlightMap4.get(formatDateForBoatRamps(new Date(selectedDateValue)));
+		var currentBoatrampsArr4 = [];
+		currentBoatramps4.forEach(function(eachRamp){
+			$("#boatRampLocations_4_" + parseInt(eachRamp["boatRampId"]).toString()).attr("href", "images/star-red.png");
+			currentBoatrampsArr4.push(parseInt(eachRamp["boatRampId"]));
+		});
+		
+		activeBoatRamps4 = new Set(currentBoatrampsArr4);
+		
+		inactiveRamps4 = new Set([...rampsJsonSet].filter(x => !activeBoatRamps4.has(x)));
 
+		inactiveRamps4.forEach(function(data){
+			$("#boatRampLocations_4_" + data.toString()).attr("href", "images/star2.png");
+		})
+		
+	}
+	
 	this.drawBoatRampCircles4 = function(){
 		d3.selectAll(".boatRampLocations_4").remove();
 		scale_factor = Math.max((1 / Math.pow(2, map4.getZoom() - 13))/64, 0.0000002);
 		sel.append('g')
-		.attr('id','boatRampLocations4')
 		.attr('class','boatRampLocations_4')
 		.selectAll('image')
 		.data(rampsJson).enter()
 		.append('svg:image')
-		.attr("xlink:href", function(d){if((onlyBoatRampIds4.indexOf(d.properties["ID"])) != -1){
+		.attr("xlink:href", function(d){
+			/*if((onlyBoatRampIds1.indexOf(d.properties["RampID"])) != -1){
 			return "images/star-red.png";
-		} else {
+		} else {*/
 			return "images/star2.png";	    
-		}   })
-		.attr("width", (16* scale_factor).toString()+"px")
+		//}
+		})
+		.attr('id', function (d){return 'boatRampLocations_4_' + d.properties["RampID"]})
+		.attr("width", (16 * scale_factor).toString()+"px")
 		.attr("height", (16 * scale_factor).toString()+"px")
 		.style("cursor","default")
 		// .attr('r', 11 * scale_factor)
@@ -1531,7 +2046,7 @@ sliderSvgOverlay4 = L.d3SvgOverlay(function(sel, proj){
 
 		applyTooltipTransition(0.9);
 
-		if(  (onlyBoatRampIds4.indexOf(d.properties["ID"])) != -1){
+		if(  (onlyBoatRampIds4.indexOf(d.properties["RampID"])) != -1){
 			toolTipBoatRampColor = "red";
 		} else {
 			toolTipBoatRampColor = "#04A7ED";
@@ -1557,6 +2072,7 @@ sliderSvgOverlay4 = L.d3SvgOverlay(function(sel, proj){
 	if(canDraw){
 		this.drawOilSpillCircles4();
 		this.drawBoatRampCircles4();
+		colorBoatRamps4();
 		//filterOilStatusWise();
 	}
 
@@ -1566,21 +2082,21 @@ sliderSvgOverlay4 = L.d3SvgOverlay(function(sel, proj){
 		.style("opacity", newOpacity);
 	}
 
-	function getCurrentDateHighlightedRamps(){
+/*	function getCurrentDateHighlightedRamps4(){
 		filteredDataForRamps4 = boatRampHighlightData4.filter(function(eachDayRamp) {
 			return (eachDayRamp["date"] ==  developedTimeBoatRamps);
 		});
 		onlyBoatRampIds4 = [];
 		filteredDataForRamps4.forEach(function(eachElement){
-			onlyBoatRampIds.push(parseInt(eachElement.boatRampId));
+			onlyBoatRampIds4.push(parseInt(eachElement.boatRampId));
 		});
 		onlyBoatRampIds4 = onlyBoatRampIds4.filter(function(elem, index, self) {
 			return index == self.indexOf(elem);
 		});
 		onlyBoatRampIds4.sort();
-	}
+	}*/
 	
-	function simulateSpill4(){
+	this.simulateSpill4 = function(){
 //		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		d3.selectAll("circle").remove();
 		currentSpillType = $('#spillTypeSelector').val();
@@ -1596,10 +2112,45 @@ sliderSvgOverlay4 = L.d3SvgOverlay(function(sel, proj){
 			});
 		}
 		
-		//drawHeatMap4();
+		drawHeatMap4();
 		
 		
-		getCurrentDateHighlightedRamps();
+		//getCurrentDateHighlightedRamps4();
+		
+		//console.log("started coloring 4 : " + new Date().getTime());
+		//sliderSvgOverlay4.drawBoatRampCircles4();
+		colorBoatRamps4();
+		//console.log("ended coloring 4 : "+  new Date().getTime());
+		
+		filterDataImpactGridCounts = impactGridCounts.filter(function(rowForMonthAndYear) {
+			var result = (rowForMonthAndYear["CURR_TIME"].substring(0,11) <=  developedTime);
+
+			if(result)
+				onlyFilterDataImpactGridCountsIds.push(rowForMonthAndYear['Polygon_ID']);
+
+			return result;
+
+		});
+
+		onlyFilterDataImpactGridCountsIds = [];
+		onlyFilterIGCIUnique = [];
+		filterDataImpactGridCounts.forEach(function(eachPolygonRow){
+			onlyFilterDataImpactGridCountsIds.push(eachPolygonRow['Polygon_ID']);
+		});
+
+		$.each(onlyFilterDataImpactGridCountsIds, function(i, el){
+			if($.inArray(el, onlyFilterIGCIUnique) === -1) onlyFilterIGCIUnique.push(el);
+		});
+
+		filterDataImpactGridCountsComplement = [];
+		impactGridCounts.forEach(function(rowForMonthAndYear) {
+			if((rowForMonthAndYear["CURR_TIME"].substring(0,11) >  developedTime) && (onlyFilterIGCIUnique.indexOf(rowForMonthAndYear["Polygon_ID"]) == -1)){
+				filterDataImpactGridCountsComplement.push(rowForMonthAndYear);
+			}
+		});
+		
+		
+		colorPolygons4();
 
 	}
 
