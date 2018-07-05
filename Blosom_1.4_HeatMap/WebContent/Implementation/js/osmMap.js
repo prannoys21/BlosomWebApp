@@ -1,3 +1,5 @@
+//List of all the global variables
+
 var cumulativeBeaching00 = [];
 var cumulativeBeaching75 = [];
 var cumulativeBeaching80 = [];
@@ -371,14 +373,18 @@ var gridDifferenceLegendClass3;
 var gridDifferenceLegendClass4;
 var gridDifferenceLegendClass5;
 
+//List of all the global variables end
 
+
+//Document. ready starts
 $(document).ready(function(){
 	
+	//Hiding the grid difference legend initially
 	$("#impactDifferenceLegend").hide();
 	$(".lds-roller").show();
 
 promises[0] = new Promise(function(resolve, reject) {
-
+//First, we read all the final files-the ones that have the oil parcel data and their corresponding locations
 	d3.csv("data/finalFile00.0.csv", function (data) {
 		console.log("1");
 		dataCut00 = data.map(function(d){
@@ -649,6 +655,7 @@ promises[0] = new Promise(function(resolve, reject) {
 		});
 	});
 
+////Next, we read all the boat ramps data and their corresponding locations
 
 	promises[6] = new Promise(function(resolve, reject) {
 		
@@ -665,6 +672,8 @@ promises[0] = new Promise(function(resolve, reject) {
 			resolve();
 		});
 	});
+	
+//Similarly we read the Impact Grid shapefile to draw the impact grid
 
 	
 	promises[7] = new Promise(function(resolve, reject) {
@@ -680,6 +689,7 @@ promises[0] = new Promise(function(resolve, reject) {
 	});
 	
 
+//Next, we read the highlighted boat ramps data
 	promises[8] = new Promise(function(resolve, reject) {
 		
 		d3.csv("data/ResultBoatRampDayWise00.0_unique.csv", function (data) {
@@ -794,8 +804,9 @@ promises[0] = new Promise(function(resolve, reject) {
 	boatRampHighlightMap3 = boatRampHighlightMap95;
 	boatRampHighlightMap4 = boatRampHighlightMap95;
 	
-	
 
+
+//Then, finally we read the spatial join result files
 	d3.csv("data/SJOilGrid00.0_Uncleaned_RequiredColumns_Count_Unique_LatestCount.csv", function (data) {
 		console.log("15");
 		impactGridCounts00 = data;
@@ -863,36 +874,43 @@ promises[0] = new Promise(function(resolve, reject) {
 	});
 	
 	
+	
+//Once all the promises are resolved, the following is executed
 
 	Promise.all(promises).then(function(result){
 		console.log("21");
 
-		
+		//Drawing the boat ramps for all the four maps
 		sliderSvgOverlay.drawBoatRampCircles();
-		sliderSvgOverlay.drawOilSpillCircles();
+		//sliderSvgOverlay.drawOilSpillCircles();
 		sliderSvgOverlay2.drawBoatRampCircles2();
-		sliderSvgOverlay2.drawOilSpillCircles2();
+		//sliderSvgOverlay2.drawOilSpillCircles2();
 		sliderSvgOverlay3.drawBoatRampCircles3();
-		sliderSvgOverlay3.drawOilSpillCircles3();
+		//sliderSvgOverlay3.drawOilSpillCircles3();
 		sliderSvgOverlay4.drawBoatRampCircles4();
-		sliderSvgOverlay4.drawOilSpillCircles4();
+		//sliderSvgOverlay4.drawOilSpillCircles4();
 		canDraw = true;
+		
+		//Drawing the impact grid on all the four maps
 		drawImpactGrid();
 		drawImpactGrid2();
 		drawImpactGrid3();
 		drawImpactGrid4();
 		
+		//Drawing the ESI tile layer on all the four maps
 		drawEsiTileLayer();
 		drawEsiTileLayer2();
 		drawEsiTileLayer3();
 		drawEsiTileLayer4();
 		
+		//Calculating the overall impact range
 		minImpactArr = [minImpact75, minImpact80, minImpact85, minImpact90, minImpact95, minImpact00];
 		maxImpactArr = [maxImpact75, maxImpact80, maxImpact85, maxImpact90, maxImpact95, maxImpact00];
 		finalMinImpact = Math.min.apply(null, minImpactArr);
 		finalMaxImpact = Math.max.apply(null, maxImpactArr);
 		finalOverallImpactRange = finalMaxImpact - finalMinImpact;
 		
+		//Dynamically populating the impact grid legend
 		impactGridLegendClass1 = (finalOverallImpactRange * 0.2); 
 		impactGridLegendClass2 = (finalOverallImpactRange * 0.4);
 		impactGridLegendClass3 = (finalOverallImpactRange * 0.6);
@@ -906,6 +924,9 @@ promises[0] = new Promise(function(resolve, reject) {
 		$("#impactGridClass5").text((Math.round(impactGridLegendClass4 + 1)).toString() + " - "  + finalMaxImpact);
 		
 		console.log("22");
+		
+		
+		//Giving the checkbox options for all the four maps
 		
 		groupedOverlays1 = {
 
@@ -944,6 +965,8 @@ promises[0] = new Promise(function(resolve, reject) {
 		L.control.layers(baseLayers2, groupedOverlays2).addTo(map2);
 		L.control.layers(baseLayers3, groupedOverlays3).addTo(map3);
 		L.control.layers(baseLayers4, groupedOverlays4).addTo(map4);
+		
+		//Since boat ramp overlay messes up the zoom of the boat ramps and makes them look too small or toooo big, manually adding the checkbox to toggle boat ramps on all the four maps
 		$('#osmMap1 .leaflet-control-layers-overlays').append('<label><div><input id="boatRampMap1Toggle" type="checkbox" data-index="1" class="leaflet-control-layers-selector" checked="" class=""><span> Boat Ramp Overlay</span></div></label>');
 		$('#osmMap2 .leaflet-control-layers-overlays').append('<label><div><input id="boatRampMap2Toggle" type="checkbox" data-index="1" class="leaflet-control-layers-selector" checked="" class=""><span> Boat Ramp Overlay</span></div></label>');
 		$('#osmMap3 .leaflet-control-layers-overlays').append('<label><div><input id="boatRampMap3Toggle" type="checkbox" data-index="1" class="leaflet-control-layers-selector" checked="" class=""><span> Boat Ramp Overlay</span></div></label>');
@@ -996,7 +1019,7 @@ promises[0] = new Promise(function(resolve, reject) {
 
 
 
-
+//Function for the right click context menu
 $(function(){
     $.contextMenu({
         selector: '#mapCollection', 
@@ -1104,17 +1127,19 @@ $(function(){
 });
 
 
-
+//Declaring the tile URLs 
 var defaultOSM = L.tileLayer('https://{s}.tile.thunderforest.com/outdoors/{z}/{x}/{y}.png?apikey=6db8cb757e354777bdf5f25d32416bff'),
 neighborHood= L.tileLayer('https://{s}.tile.thunderforest.com/neighbourhood/{z}/{x}/{y}.png?apikey=6db8cb757e354777bdf5f25d32416bff'),
 cycleMap = L.tileLayer('https://{s}.tile.thunderforest.com/cycle/{z}/{x}/{y}.png?apikey=6db8cb757e354777bdf5f25d32416bff'),
 transportMap = L.tileLayer('https://{s}.tile.thunderforest.com/transport/{z}/{x}/{y}.png?apikey=6db8cb757e354777bdf5f25d32416bff');
 
+//Used to store uncleaned oil parcels
 multipleLayerControl  = new L.layerGroup();
 multipleLayerControl2  = new L.layerGroup();
 multipleLayerControl3  = new L.layerGroup();
 multipleLayerControl4  = new L.layerGroup();
 
+//Used to store cleaned oil parcels
 multipleLayerControlCleaned  = new L.layerGroup();
 multipleLayerControlCleaned2  = new L.layerGroup();
 multipleLayerControlCleaned3  = new L.layerGroup();
@@ -1178,49 +1203,8 @@ var map4 = L.map('osmMap4', {
 	layers: [baseLayers4.DefaultOSM,  baseLayers4.Neighborhood,  /*baseLayers4.TransportMap,*/ baseLayers4.CycleMap, multipleLayerControl4, multipleLayerControlCleaned4]
 });
 
-/*EsiTiles	=  L.tileLayer('EsiLayer/{z}/{x}/{y}.png', {
-	minZoom: 7,
-    maxZoom: 16,
-    maxNativeZoom: defaultZoomlevel,
-    minNativeZoom: defaultZoomlevel
-}).addTo(map);*/
 
-/*var infoButton = L.control.infoButton({linkTitle: 'About this map', title: '<h2>About this scenario</h2>'}).addTo(map);*/
-/*var helloPopup = L.popup().setContent('Hello World!');
-
-
-L.easyButton('fa-comment', function(btn, map){
-    helloPopup.setLatLng(map.getCenter()).openOn(map);
-}).addTo(map);
-*/
-
-///////////////////////IMPACT OVERLAY STARTS/////////////////
-
-/*function drawEsiLines(){
-	esiGomLines = L.d3SvgOverlay(function(sel, proj) {
-		var upd2 = sel.selectAll('path').data(esiGom);
-		upd2
-		.enter()
-		.append('path')
-		.attr('class','esiGom')
-		.attr('d', proj.pathFromGeojson)
-		.attr('stroke', 'black')
-		.attr('id', function(d){
-			return "esiGomLine_" + d.properties['OBJECTID'];
-		})
-		.attr('fill', 'red')
-		.attr('fill-opacity', '0.7');
-		upd2.attr('stroke-width', 0.1 / proj.scale);
-		//colorPolygons();
-	});
-	esiGomLines.addTo(map);
-	esiGomLines.addTo(map2);
-	esiGomLines.addTo(map3);
-	esiGomLines.addTo(map4);
-}*/
-
-
-
+//Drawing impact grid for all the four maps
 function drawImpactGrid(){
 impactOverlay1 = L.d3SvgOverlay(function(sel, proj) {
 	svgIG = sel.selectAll('path').data(impactJson).enter();
@@ -1236,6 +1220,7 @@ impactOverlay1 = L.d3SvgOverlay(function(sel, proj) {
 	.attr('fill-opacity', '0.8')
 	.attr('stroke-width', 0.001 / proj.scale);
 	
+	//this part, if un-commented will display the IDs of the polygons on the boxes
 	/*svgIG.append("text")
 	.attr('x',function(d){return  proj.latLngToLayerPoint(d.latLng).x - 1 ;})
 	.attr('y',function(d){return proj.latLngToLayerPoint(d.latLng).y - 1 ;})
@@ -1336,9 +1321,9 @@ function drawImpactGrid4(){
 }
 
 
-///////////////////////IMPACT OVERLAY ENDS///////////////////
+///////////////////////Drawing the IMPACT Grid OVERLAY ENDS///////////////////
 
-///////////////////////ESI Tile OVERLAY STARTS///////////////////
+///////////////////////Drawing the ESI Tile OVERLAY STARTS///////////////////
 function drawEsiTileLayer(){
 	//map.removeLayer(esiTileOverlay1);
 	currentZoomLevel = map.getZoom();
@@ -1380,80 +1365,13 @@ function drawEsiTileLayer4(){
 	}).addTo(map4);
 }
 
-///////////////////////ESI Tile OVERLAY ENDS///////////////////
+///////////////////////Drawing ESI Tile OVERLAY ENDS///////////////////
 
-//makes sure dots don't get bigger
+//makes sure the oil parcels and the boat ramps don't get bigger when zoom is increased
 var scale_factor = Math.max((1 / Math.pow(2, map.getZoom() - 13))/64, 0.25);
 var zoomLevel=map.getZoom();
 
-/*//legend for the heatmap
-var legend = L.control({position: 'bottomright'});
-
-legend.onAdd = function (map) {
-
-	var div = L.DomUtil.create('div', 'info legend'),
-	grades = [14, 28, 43, 57, 71, 86, 100],
-	labels = ['(0-14)%','(14-28)%','(28-43)%','(43-57)%','(57-71)%','(71-86)%','(86-100)%'];
-
-	// loop through our density intervals and generate a label with a colored
-	// square for each interval
-	div.innerHTML += '<h4 style="text-align:center;">Oil Parcels</h4>';
-	for (var i = 0; i < grades.length; i++) {
-		div.innerHTML += '<i style="background:' + getColor(grades[i]) + '"></i> ' + (grades[i] ? labels[i] + '<br>' : '+');
-	}
-	div.innerHTML += '<i style="background:green"></i> Cleaned<br>';
-	return div;
-};
-legend.addTo(map4);
-
-//for the legend
-function getColor(d) {
-	switch(d) {
-	case 14: return "#feedde";
-	case 28: return "#fdd0a2";
-	case 43: return "#fdae6b";
-	case 57: return "#fd8d3c";
-	case 71: return "#f16913";
-	case 86: return "#d94801";
-	case 100: return "#8c2d04";
-	default: return "#000000";
-	}
-}*/
-
-
-//legend for the heatmap
-/*var legendImpactGrid = L.control({position: 'bottomleft'});
-
-legendImpactGrid.onAdd = function (map) {
-
-	var divImpactGrid = L.DomUtil.create('div', 'info legend'),
-	gradesImpactGrid = [20, 40, 60, 80, 100],
-	labelsImpactGrid = ['(0-20)%','(21-40)%','(41-60)%','(61-80)%','(81-100)%'];
-
-	// loop through our density intervals and generate a label with a colored
-	// square for each interval
-	divImpactGrid.innerHTML += '<h4 style="text-align:center;">Impact Grid</h4>';
-	for (var i = 0; i < gradesImpactGrid.length; i++) {
-		divImpactGrid.innerHTML += '<i style="background:' + getColorImpactGrid(gradesImpactGrid[i]) + '"></i> ' + (gradesImpactGrid[i] ? labelsImpactGrid[i] + '<br>' : '+');
-	}
-	divImpactGrid.innerHTML += '<i style="background:#43a2ca; opacity:0.7;"></i> No Impact<br>';
-	return divImpactGrid;
-};
-legendImpactGrid.addTo(map3);
-
-//for the legend
-function getColorImpactGrid(d) {
-	switch(d) {
-	case 20: return "#fee5d9";
-	case 40: return "#fcae91";
-	case 60: return "#fb6a4a";
-	case 80: return "#de2d26";
-	case 100: return "#a50f15";
-	default: return "#43a2ca";
-	}
-}*/
-
-
+//Tool tip to show the details of the boat ramps
 var tooltip = d3.select("#divslider").append("div").attr("id", "divTooltip").style("opacity", 0);
 var tooltipImpactGrid = d3.select("#divslider").append("div").attr("id", "divTooltipImpactGrid").style("opacity", 0);
 
@@ -1465,6 +1383,8 @@ tooltipImpactGrid: {
 	followPointer: true
 };
 
+
+//Drawing the heat maps on all the four maps
 function drawHeatMap1(){
 	multipleLayerControl.clearLayers();
 	multipleLayerControlCleaned.clearLayers();
@@ -1569,7 +1489,8 @@ function drawHeatMap4(){
 	}
 }
 
-
+//The following four functions color the polygons when the oil impacts the shoreline or enters the grid. 
+//Also, the baseline comparison grid difference is included in them
 function colorPolygons(){
 	
 	if(filterDataImpactGridCountsMap1.length > 0){
@@ -1855,7 +1776,7 @@ function colorPolygons4(){
 
 }
  
-
+//This function dynamically calculates the grid difference based on the current baseline map chosen and its cleanup target
 function computeGridDifferenceLegend(){
 	
 	minGridDifference = Math.min.apply(null, baseLineReferenceDifference);
@@ -1877,7 +1798,7 @@ function computeGridDifferenceLegend(){
    $("#gridDifferenceLegendClass7").text((gridDifferenceLegendClass6 + 1).toString() + " to "  + maxGridDifference);
 }
 
-//Coordinating Zooms
+//Coordinating Zooms so that when a baseline is chosen, all the maps point to the same point and the zoom level as that of the baseline
 
 $("#baseLineSelector").change(function () {
 	if ($("#baseLineSelector").val() == "map1" ){
@@ -1897,6 +1818,7 @@ $("#baseLineSelector").change(function () {
 		map4.flyTo([baseLineCoords["lat"], baseLineCoords["lng"]],baselineZoom);
 		
 		
+		//Here, we calculate the difference of each grid cell with the baseline map chosen from the other three maps
 		baseLineImpactGridMap.forEach(function(eachRow2){
 			
 			impactGridCountsMap2.forEach(function(eachRow1){
@@ -2083,7 +2005,8 @@ $("#baseLineSelector").change(function () {
 });
 //Coordinating Zooms end
 
-
+// Helps us to choose surfaced, sunk, beached, or water column oil parcels. 
+//out of bounds is rarely present in the shapefiles but still added it just in case it gets frequent in the future 
 $("#spillTypeSelector").change(function () {
 	$(".lds-roller").show();
 	sliderSvgOverlay.simulateSpill1();
@@ -2094,7 +2017,8 @@ $("#spillTypeSelector").change(function () {
 });
 
 
-
+//This function get the start date and the end date from the ImportantDates.csv 
+//So no need to hard code the start and end dates on the slider
 function getStartAndEndDate(){
 	return new Promise(function(resolve, reject) {
 	d3.csv("data/ImportantDates.csv", function (data) {
@@ -2112,10 +2036,13 @@ function getStartAndEndDate(){
 	});
 }
 
+
+//If you see a error here, its proabably because your compiler doesnt support the latest version of JavaScript
+//I used aysnc await function below
 sliderSvgOverlay = L.d3SvgOverlay(async function(sel, proj){
 	
 
-
+//Cleanup target for the first map. Helps us to choose the required clean up target
 	$('#cleanUpSelector1').click(function() {
 		if($('#cleanUpSelector1_95').is(':checked')) {
 			finalFileMap1 = dataMap95;
@@ -2162,7 +2089,7 @@ sliderSvgOverlay = L.d3SvgOverlay(async function(sel, proj){
 		 
 	});
 
-	// slider start
+	// drawing slider starts here
 	if(firsTimeLoadSlider == true){
 		firsTimeLoadSlider = false;
 
@@ -2178,19 +2105,18 @@ sliderSvgOverlay = L.d3SvgOverlay(async function(sel, proj){
 	
 		var monthAndYear = [];
 		
+		//gets the start and end date from the async await function
 		 await getStartAndEndDate();
 		
 		
 		uniqueDateStart = startDateFromCsv;
 		uniqueDateEnd = endDateFromCsv;
 
-		// scale function
 		var timeScale = d3.time.scale.utc()
 		.domain([new Date(uniqueDateStart), new Date(uniqueDateEnd)])
 		.range([0, sliderWidth])
 		.clamp(true);
 
-		// initial value
 		var startValue = timeScale(new Date(uniqueDateStart));
 		startingValue = new Date(uniqueDateStart);
 		var svgSlider = d3.select("#divslider").append("svg")
@@ -2295,9 +2221,10 @@ sliderSvgOverlay = L.d3SvgOverlay(async function(sel, proj){
 		}
 
 	}
-	// slider end
+	// drawing slider ends
 
 
+	//We are not drawing the oil parcels as circles anymore. This is very heavy on the system
 	this.drawOilSpillCircles = function(){
 		/*	d3.selectAll("circle").remove();
 		scale_factor = Math.max((1 / Math.pow(2, map.getZoom() - 13))/64, 0.0000002);
@@ -2330,7 +2257,7 @@ sliderSvgOverlay = L.d3SvgOverlay(async function(sel, proj){
 		});*/
 	}
 
-	
+	//We make the boat ramps either hollow or filled here
 	function colorBoatRamps1(){
 		currentBoatramps1 = 	boatRampHighlightMap1.get(formatDateForBoatRamps(new Date(selectedDateValue)));
 		currentBoatrampsArr1 = [];
@@ -2349,7 +2276,7 @@ sliderSvgOverlay = L.d3SvgOverlay(async function(sel, proj){
 		
 	}
 	
-
+//actual drawing of the boat ramp stars
 	this.drawBoatRampCircles = function(){
 		boatRampOverlay1 = L.d3SvgOverlay(function(sel, proj) {		
 		d3.selectAll(".boatRampLocations_1").remove();
@@ -2379,7 +2306,8 @@ sliderSvgOverlay = L.d3SvgOverlay(async function(sel, proj){
 		});
 		boatRampOverlay1.addTo(map);
 	}
-	
+
+	//will be invoked when the mouse is hovered over the boat ramps
 	function handleMouseOver(d, i) {  
 		d3.select(this).attr({
 			r: 11 * scale_factor * 2
@@ -2402,6 +2330,7 @@ sliderSvgOverlay = L.d3SvgOverlay(async function(sel, proj){
 				.style("top", ( y - (955 * 1)) + "px");
 	}
 
+	//will be invoked when the mouse leaves the boat ramp
 	function handleMouseOut(d, i) {
 		d3.select(this).attr({
 			r: 11 * scale_factor
@@ -2411,6 +2340,7 @@ sliderSvgOverlay = L.d3SvgOverlay(async function(sel, proj){
 	}
 
 
+	//makes the tool tip slightly transparent
 	function applyTooltipTransition(newOpacity) {
 		tooltip.transition()
 		.duration(500)
@@ -2418,6 +2348,7 @@ sliderSvgOverlay = L.d3SvgOverlay(async function(sel, proj){
 	}
 	
 
+	//drawing of the spill parcels, and coloring of the polygons are invoked here 
 	this.simulateSpill1 = function(){
 		d3.selectAll("circle").remove();
 		currentSpillType = $('#spillTypeSelector').val();
@@ -2472,6 +2403,8 @@ sliderSvgOverlay = L.d3SvgOverlay(async function(sel, proj){
 
 sliderSvgOverlay.addTo(map);
 
+
+//Same for the other three maps
 sliderSvgOverlay2 = L.d3SvgOverlay(function(sel, proj){
 	
 
@@ -2579,7 +2512,7 @@ sliderSvgOverlay2 = L.d3SvgOverlay(function(sel, proj){
 			r: 11 * scale_factor * 2
 		});
 3
-		applyTooltipTransition(0.9);
+		applyTooltipTransition(0.5);
 
 		if(  (currentBoatrampsArr2.indexOf(d.properties["RampID"])) != -1){
 			toolTipBoatRampColor = "red";
@@ -2603,7 +2536,8 @@ sliderSvgOverlay2 = L.d3SvgOverlay(function(sel, proj){
 
 		applyTooltipTransition(0)
 	}
-
+	
+	//applies a transparency of 0.5
 	function applyTooltipTransition(newOpacity) {
 		tooltip.transition()
 		.duration(500)

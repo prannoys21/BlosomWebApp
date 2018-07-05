@@ -23,12 +23,15 @@
 </head>
 <body>
 
+<!-- Contains all the four maps -->
 <div id="mapCollection">
+
 <div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
 	<div id="osmMap1">
 	
 		<script src="js/shapefile.js"></script>
-		<script src="js/d3-tip.js"></script>		
+		<script src="js/d3-tip.js"></script>
+		<!-- Cleanup Target Selector -->		
 		<div id="cleanUpSelector1" class="info legend leaflet-control cleanUp">
 			<input id="cleanUpSelector1_00" type="radio" class="leaflet-control-layers-selector" name="leaflet-base-layers1" value="00"><span> 0% Clean</span><br>
 			<input id="cleanUpSelector1_75" type="radio" class="leaflet-control-layers-selector" name="leaflet-base-layers1" value="75"><span> 75% Clean</span><br>
@@ -38,7 +41,7 @@
 			<input id="cleanUpSelector1_95" type="radio" class="leaflet-control-layers-selector" name="leaflet-base-layers1" value="95"><span> 95% Clean</span><br>
 		</div>
 		
-		<!-- 		<div class="leaflet-bottom leaflet-left"> -->
+			<!-- Oil Parcels Legend -->
 			<div id="oilParcelsLegend" class="info legend leaflet-control oilParcels" >
 				<h4 style="text-align:center;">Oil Parcels</h4>
 					<i style="background:#f2f0f7"></i> (0-14)%<br>
@@ -50,7 +53,6 @@
 					<i style="background:#4a1486"></i> (86-100)%<br>
 					<i style="background:green"></i> Cleaned<br>
 				</div>
-		<!-- </div> -->
 		
 	</div>
 	<div id="osmMap2">
@@ -64,7 +66,7 @@
 			<input id="cleanUpSelector2_90" type="radio" class="leaflet-control-layers-selector" name="leaflet-base-layers2" value="90"><span> 90% Clean</span><br>
 			<input id="cleanUpSelector2_95" type="radio" class="leaflet-control-layers-selector" name="leaflet-base-layers2" value="95"><span> 95% Clean</span><br>
 		</div>
-			<!-- <div class="leaflet-bottom leaflet-right"> -->
+
 			<div class="info legend leaflet-control esi" id="ESILegend">
 				<h4 style="text-align:center;">ESI Indices</h4>
 					<i style="background:#fff5f0"></i> 1 <br>
@@ -78,7 +80,6 @@
 					<i style="background:#99000d"></i> 9 <br>
 					<i style="background:#67000d"></i> 10 <br>
 				</div>
-		<!-- </div> -->
 		
 		
 	</div>
@@ -93,7 +94,6 @@
 			<input id="cleanUpSelector3_90" type="radio" class="leaflet-control-layers-selector" name="leaflet-base-layers3" value="90"><span> 90% Clean</span><br>
 			<input id="cleanUpSelector3_95" type="radio" class="leaflet-control-layers-selector" name="leaflet-base-layers3" value="95"><span> 95% Clean</span><br>
 		</div>
-			<!-- <div class="leaflet-bottom leaflet-left"> -->
 			<div class="info legend leaflet-control impactDifference" id="impactDifferenceLegend" >
 				<h4 style="text-align:center;">Grid Difference</h4>
 					<i style="background:#b2182b"></i> <p id="gridDifferenceLegendClass1" class="gridDifferencePTag"></p><br>
@@ -105,7 +105,6 @@
 					<i style="background:#2166ac"></i> <p id="gridDifferenceLegendClass7" class="gridDifferencePTag"></p><br>
 					
 				</div>
-		<!-- </div> -->
 		
 
 	</div>
@@ -120,15 +119,13 @@
 			<input id="cleanUpSelector4_90" type="radio" class="leaflet-control-layers-selector" name="leaflet-base-layers4" value="90"><span> 90% Clean</span><br>
 			<input id="cleanUpSelector4_95" type="radio" class="leaflet-control-layers-selector" name="leaflet-base-layers4" value="95"><span> 95% Clean</span><br>
 		</div>
-			<!-- <div class="leaflet-bottom leaflet-right"> -->
+
 				<div class="info legend leaflet-control boatRamps" id="boatRampsLegend">
 					<h4 style="text-align:center;">Boat Ramps</h4>
 						<img src="images/inactiveBR.png" style="width:20px;height:20px;">  Inactive  <br>
 						<img src="images/activeBR.png" style="width:18px;height:18px;">  Active <br>
 				</div>
-			<!-- </div> -->
 			
-			<!-- <div class="leaflet-bottom leaflet-right"> -->
 				<div class="info legend leaflet-control impactGrid" id="impactGridLegend">
 					<h4 style="text-align:center;">Impact Grid</h4>
 						<i  style="background:#f2f0f7"></i> <p id="impactGridClass1" class="impactGridPTag">  </p><br>
@@ -138,12 +135,12 @@
 						<i  style="background:#54278f"></i> <p id="impactGridClass5" class="impactGridPTag">  </p><br>
 						<i style="background:#ffffff; opacity:0.7;"></i> No Impact<br>
 				</div>
-			<!-- </div> -->
 		
 	</div>
 	</div>
 	
 	<br>
+	<!-- Slider -->
 	<div id="divslider" class="divslider  leaflet-bottom leaflet-control leaflet-overlay-pane svg" style="z-index: 1000;"> <!-- adding leaflet-bar  will add a rectangular box around it  -->
 		<select id="spillTypeSelector"  class="spillTypeSelector info leaflet-control">
 			<option value="all" selected="selected">Choose Oil Type</option>
@@ -153,6 +150,7 @@
 			<option value="beached">Beached</option>
 		</select>
 		
+		<!-- Baseline Selector -->
 		<select id="baseLineSelector"  class="baseLineSelector info leaflet-control">
 			<option value="all" selected="selected">Choose Baseline Map</option>
 			<option value="map1">Map 1</option>
@@ -163,6 +161,7 @@
 		
 		</div>
 	
+	<!-- All the JS files -->
 	<script src="https://unpkg.com/leaflet@1.3.1/dist/leaflet.js"></script>
 	<script src="js/L.D3SvgOverlay.min.js"></script>
 	<script src="js/L.D3SvgOverlay.js"></script>
