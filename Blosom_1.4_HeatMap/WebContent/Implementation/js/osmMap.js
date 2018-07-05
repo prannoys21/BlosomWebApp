@@ -1,5 +1,9 @@
 //List of all the global variables
-
+/*
+ * Author: Prannoy Chandra
+ * ppydimed@asu.edu
+ * 
+ * */
 var cumulativeBeaching00 = [];
 var cumulativeBeaching75 = [];
 var cumulativeBeaching80 = [];
