@@ -4,118 +4,175 @@
 <head>
 <link rel="shortcut icon" href="">
 <title>BLOSOM v1.4 - HeatMap</title>
+<!-- JS URL's -->
 <script src="https://d3js.org/d3.v3.min.js"></script>
 <script src="https://d3js.org/d3-queue.v3.min.js"></script>
 <script	src='http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
 
-
-
+<!-- CSS Link -->
 <link href='http://fonts.googleapis.com/css?family=Raleway' rel='stylesheet' type='text/css'>
 <link href='http://fonts.googleapis.com/css?family=Oswald:400,300,700'	rel='stylesheet' type='text/css'>
 <link rel="stylesheet"	href="https://unpkg.com/leaflet@1.3.1/dist/leaflet.css" />
 <link rel="stylesheet" type="text/css" href="css/osmMap.css">
 <link rel="stylesheet" type="text/css" href="css/slider.css">
-<link rel="stylesheet" type="text/css" href="css/loader.css">
+<link rel="stylesheet" type="text/css" href="css/loader2.css">
 <link rel="stylesheet" type="text/css" href="css/popup.css">
-<link rel="stylesheet" type="text/css" href="css/leaflet.infoButton.css">
-<!-- <link rel="stylesheet" type="text/css" href="css/easy-button.css"> -->
-<!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet-easybutton@2/src/easy-button.css"> -->
+<link rel="stylesheet" type="text/css" href="css/jquery.contextMenu.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
+
 </head>
 <body>
-<div class="se-pre-con"></div>
 
 <div id="mapCollection">
-
+<div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
 	<div id="osmMap1">
 	
 		<script src="js/shapefile.js"></script>
-		<script src="js/d3-tip.js"></script>		<div id="cleanUpSelector1" class="info legend leaflet-control cleanUp">
+		<script src="js/d3-tip.js"></script>		
+		<div id="cleanUpSelector1" class="info legend leaflet-control cleanUp">
+			<input id="cleanUpSelector1_00" type="radio" class="leaflet-control-layers-selector" name="leaflet-base-layers1" value="00"><span> 0% Clean</span><br>
 			<input id="cleanUpSelector1_75" type="radio" class="leaflet-control-layers-selector" name="leaflet-base-layers1" value="75"><span> 75% Clean</span><br>
 			<input id="cleanUpSelector1_80" type="radio" class="leaflet-control-layers-selector" name="leaflet-base-layers1" value="80"><span> 80% Clean</span><br>
 			<input id="cleanUpSelector1_85" type="radio" class="leaflet-control-layers-selector" name="leaflet-base-layers1" value="85"><span> 85% Clean</span><br>
 			<input id="cleanUpSelector1_90" type="radio" class="leaflet-control-layers-selector" name="leaflet-base-layers1" value="90"><span> 90% Clean</span><br>
 			<input id="cleanUpSelector1_95" type="radio" class="leaflet-control-layers-selector" name="leaflet-base-layers1" value="95"><span> 95% Clean</span><br>
 		</div>
+		
+		<!-- 		<div class="leaflet-bottom leaflet-left"> -->
+			<div id="oilParcelsLegend" class="info legend leaflet-control oilParcels" >
+				<h4 style="text-align:center;">Oil Parcels</h4>
+					<i style="background:#f2f0f7"></i> (0-14)%<br>
+					<i style="background:#dadaeb"></i> (14-28)%<br>
+					<i style="background:#bcbddc"></i> (28-43)%<br>
+					<i style="background:#9e9ac8"></i> (43-57)%<br>
+					<i style="background:#807dba"></i> (57-71)%<br>
+					<i style="background:#6a51a3"></i> (71-86)%<br>
+					<i style="background:#4a1486"></i> (86-100)%<br>
+					<i style="background:green"></i> Cleaned<br>
+				</div>
+		<!-- </div> -->
+		
 	</div>
 	<div id="osmMap2">
 		<script src="js/shapefile.js"></script>
 		<script src="js/d3-tip.js"></script>
 		<div id="cleanUpSelector2" class="info legend leaflet-control cleanUp">
+			<input id="cleanUpSelector2_00" type="radio" class="leaflet-control-layers-selector" name="leaflet-base-layers2" value="00"><span> 0% Clean</span><br>
 			<input id="cleanUpSelector2_75" type="radio" class="leaflet-control-layers-selector" name="leaflet-base-layers2" value="75"><span> 75% Clean</span><br>
 			<input id="cleanUpSelector2_80" type="radio" class="leaflet-control-layers-selector" name="leaflet-base-layers2" value="80"><span> 80% Clean</span><br>
 			<input id="cleanUpSelector2_85" type="radio" class="leaflet-control-layers-selector" name="leaflet-base-layers2" value="85"><span> 85% Clean</span><br>
 			<input id="cleanUpSelector2_90" type="radio" class="leaflet-control-layers-selector" name="leaflet-base-layers2" value="90"><span> 90% Clean</span><br>
 			<input id="cleanUpSelector2_95" type="radio" class="leaflet-control-layers-selector" name="leaflet-base-layers2" value="95"><span> 95% Clean</span><br>
 		</div>
+			<!-- <div class="leaflet-bottom leaflet-right"> -->
+			<div class="info legend leaflet-control esi" id="ESILegend">
+				<h4 style="text-align:center;">ESI Indices</h4>
+					<i style="background:#fff5f0"></i> 1 <br>
+					<i style="background:#fee0d2"></i> 2 <br>
+					<i style="background:#fcbba1"></i> 3 <br>
+					<i style="background:#fc9272"></i> 4 <br>
+					<i style="background:#fb6a4a"></i> 5 <br>
+					<i style="background:#ef3b2c"></i> 6 <br>
+					<i style="background:#cb181d"></i> 7 <br>
+					<i style="background:#a50f15"></i> 8 <br>
+					<i style="background:#99000d"></i> 9 <br>
+					<i style="background:#67000d"></i> 10 <br>
+				</div>
+		<!-- </div> -->
+		
+		
 	</div>
 	<div id="osmMap3">
 		<script src="js/shapefile.js"></script>
 		<script src="js/d3-tip.js"></script>
 		<div id="cleanUpSelector3" class="info legend leaflet-control cleanUp">
+			<input id="cleanUpSelector3_00" type="radio" class="leaflet-control-layers-selector" name="leaflet-base-layers3" value="00"><span> 0% Clean</span><br>
 			<input id="cleanUpSelector3_75" type="radio" class="leaflet-control-layers-selector" name="leaflet-base-layers3" value="75"><span> 75% Clean</span><br>
 			<input id="cleanUpSelector3_80" type="radio" class="leaflet-control-layers-selector" name="leaflet-base-layers3" value="80"><span> 80% Clean</span><br>
 			<input id="cleanUpSelector3_85" type="radio" class="leaflet-control-layers-selector" name="leaflet-base-layers3" value="85"><span> 85% Clean</span><br>
 			<input id="cleanUpSelector3_90" type="radio" class="leaflet-control-layers-selector" name="leaflet-base-layers3" value="90"><span> 90% Clean</span><br>
 			<input id="cleanUpSelector3_95" type="radio" class="leaflet-control-layers-selector" name="leaflet-base-layers3" value="95"><span> 95% Clean</span><br>
 		</div>
+			<!-- <div class="leaflet-bottom leaflet-left"> -->
+			<div class="info legend leaflet-control impactDifference" id="impactDifferenceLegend" >
+				<h4 style="text-align:center;">Grid Difference</h4>
+					<i style="background:#b2182b"></i> <p id="gridDifferenceLegendClass1" class="gridDifferencePTag"></p><br>
+					<i style="background:#ef8a62"></i> <p id="gridDifferenceLegendClass2" class="gridDifferencePTag"></p><br>
+					<i style="background:#fddbc7"></i> <p id="gridDifferenceLegendClass3" class="gridDifferencePTag"></p><br>
+					<i style="background:#f7f7f7"></i> <p id="gridDifferenceLegendClass4" class="gridDifferencePTag"></p><br>
+					<i style="background:#d1e5f0"></i> <p id="gridDifferenceLegendClass5" class="gridDifferencePTag"></p><br>
+					<i style="background:#67a9cf"></i> <p id="gridDifferenceLegendClass6" class="gridDifferencePTag"></p><br>
+					<i style="background:#2166ac"></i> <p id="gridDifferenceLegendClass7" class="gridDifferencePTag"></p><br>
+					
+				</div>
+		<!-- </div> -->
+		
+
 	</div>
 	<div id="osmMap4">
 		<script src="js/shapefile.js"></script>
 		<script src="js/d3-tip.js"></script>
 		<div id="cleanUpSelector4" class="info legend leaflet-control cleanUp">
+			<input id="cleanUpSelector4_00" type="radio" class="leaflet-control-layers-selector" name="leaflet-base-layers4" value="00"><span> 0% Clean</span><br>
 			<input id="cleanUpSelector4_75" type="radio" class="leaflet-control-layers-selector" name="leaflet-base-layers4" value="75"><span> 75% Clean</span><br>
 			<input id="cleanUpSelector4_80" type="radio" class="leaflet-control-layers-selector" name="leaflet-base-layers4" value="80"><span> 80% Clean</span><br>
 			<input id="cleanUpSelector4_85" type="radio" class="leaflet-control-layers-selector" name="leaflet-base-layers4" value="85"><span> 85% Clean</span><br>
 			<input id="cleanUpSelector4_90" type="radio" class="leaflet-control-layers-selector" name="leaflet-base-layers4" value="90"><span> 90% Clean</span><br>
 			<input id="cleanUpSelector4_95" type="radio" class="leaflet-control-layers-selector" name="leaflet-base-layers4" value="95"><span> 95% Clean</span><br>
 		</div>
-	</div>
-	</div>
-	
-	
-	<a class="customInfoButton leaflet-control" href="#popup1" onclick="showScenarioInfo();">i</a>
-		<div id="popup1" class="overlay leaflet-control">
-				<div class="popup leaflet-control">
-					<h2>Here i am</h2>
-					<a class="close" href="#">&times;</a>
-					<div class="content">
-						This is some info about the simulation. This changes when the scenrio changes with the dropdown.
-					</div>
+			<!-- <div class="leaflet-bottom leaflet-right"> -->
+				<div class="info legend leaflet-control boatRamps" id="boatRampsLegend">
+					<h4 style="text-align:center;">Boat Ramps</h4>
+						<img src="images/inactiveBR.png" style="width:20px;height:20px;">  Inactive  <br>
+						<img src="images/activeBR.png" style="width:18px;height:18px;">  Active <br>
 				</div>
-		</div>
-	
+			<!-- </div> -->
+			
+			<!-- <div class="leaflet-bottom leaflet-right"> -->
+				<div class="info legend leaflet-control impactGrid" id="impactGridLegend">
+					<h4 style="text-align:center;">Impact Grid</h4>
+						<i  style="background:#f2f0f7"></i> <p id="impactGridClass1" class="impactGridPTag">  </p><br>
+						<i  style="background:#cbc9e2"></i> <p id="impactGridClass2" class="impactGridPTag">  </p><br>
+						<i  style="background:#9e9ac8"></i> <p id="impactGridClass3" class="impactGridPTag">  </p><br>
+						<i  style="background:#756bb1"></i> <p id="impactGridClass4" class="impactGridPTag">  </p><br>
+						<i  style="background:#54278f"></i> <p id="impactGridClass5" class="impactGridPTag">  </p><br>
+						<i style="background:#ffffff; opacity:0.7;"></i> No Impact<br>
+				</div>
+			<!-- </div> -->
+		
+	</div>
+	</div>
 	
 	<br>
 	<div id="divslider" class="divslider  leaflet-bottom leaflet-control leaflet-overlay-pane svg" style="z-index: 1000;"> <!-- adding leaflet-bar  will add a rectangular box around it  -->
-		<!-- <button class="info leaflet-control" id="heatmapToggle" >Toggle Heatmap</button> -->
 		<select id="spillTypeSelector"  class="spillTypeSelector info leaflet-control">
-			<option value="all" selected="selected">All</option>
+			<option value="all" selected="selected">Choose Oil Type</option>
 			<option value="water column">Water Column</option>
 			<option value="surfaced">Surfaced</option>
 			<option value="sunk">Sunk</option>
 			<option value="beached">Beached</option>
 		</select>
 		
+		<select id="baseLineSelector"  class="baseLineSelector info leaflet-control">
+			<option value="all" selected="selected">Choose Baseline Map</option>
+			<option value="map1">Map 1</option>
+			<option value="map2">Map 2</option>
+			<option value="map3">Map 3</option>
+			<option value="map4">Map 4</option>
+		</select>
 		
 		</div>
-			<!-- <div class="box"> -->
-				<!-- <a class="customInfoButton leaflet-control" href="#popup1">i</a> -->
-			<!-- </div> -->
-			
-					
-		
 	
 	<script src="https://unpkg.com/leaflet@1.3.1/dist/leaflet.js"></script>
 	<script src="js/L.D3SvgOverlay.min.js"></script>
 	<script src="js/L.D3SvgOverlay.js"></script>
 	<script src="js/leaflet-heat.js"></script>
 	<script src="js/leaflet.ajax.min.js"></script>
-	<!-- <script src="js/easy-button.js"></script> -->
 	<script src="js/leaflet.infoButton.js"></script>
 	<script src="js/osmMap.js"></script>
-	
+	<script src="js/d3-tip.js"></script>
+	<script src="js/jquery.contextMenu.js"></script>
 	<script src="http://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.2/modernizr.js"></script>
-	<!-- <script src="https://cdn.jsdelivr.net/npm/leaflet-easybutton@2/src/easy-button.js"></script> -->
 
 
 </body>

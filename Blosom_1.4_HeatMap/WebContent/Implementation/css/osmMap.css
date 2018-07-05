@@ -4,43 +4,44 @@ html, body
 	width: 100%; 
 	margin:0;
 	padding:0;
+	overflow: hidden;
 }
 
 #osmMap1 
 {
-	height:49.5%;
-	width: 49.5%; 
+	height:50%;
+	width: 49.95%; 
 	z-index:1;
 	float: left;
-	border-right: 1px solid black;
-	border-bottom: 1px solid black;
+	border-right: 1px solid #555;
+	border-bottom: 1px solid #555;
 }
 
 #osmMap2 
 {
-	height:49.5%;
-	width: 49.5%; 
+	height:50%;
+	width: 49.95%; 
 	z-index:1;
 	float: left;
-	border-bottom: 1px solid black;
+	border-bottom: 1px solid #555;	
 }
 
 #osmMap3 
 {
-	height:49.5%;
-	width: 49.5%; 
+	height:50%;
+	width: 49.95%; 
 	z-index:1;
 	float: left;
-	border-right: 1px solid black;
+	border-right: 1px solid #555;	
 }
 
 #osmMap4 
 {
-	height:49.5%;
-	width: 49.5%; 
+	height:50%;
+	width: 49.95%; 
 	z-index:1;
 	float: left;
-	border-left:1px solid black;
+	/* border-left:1px solid black; */
 }
 
 #divslider {
@@ -58,6 +59,13 @@ html, body
 	float:left;
 	width: 14%;
 	margin-top: 6%;
+}
+
+#baseLineSelector {
+	float:left;
+	width: 14%;
+	margin-top: -5%;
+    margin-left: -16%;
 }
 
 
@@ -166,10 +174,58 @@ html, body
  }
  
  .cleanUp{
-    width: 9%;
+    width: 10%;
     margin-left: 87.6%;
-    margin-top: 21%;
+    margin-top: 7%;
     position: absolute;
+ }
+ 
+ .boatRamps{
+	margin-left: 87.5%;
+    width: 10%;
+    margin-top: 22%;
+    position: relative;
+ }
+ 
+ .impactGrid{
+ 	margin-left: 87.5%;
+    width: 10%;
+    margin-top: 1%;
+    position: relative;
+ }
+ 
+ .oilParcels{
+	margin-left: 0.6%;
+    margin-top: 32%;
+    width: 10%;
+    position: relative;
+ }
+ 
+ .impactDifference{
+	margin-bottom: 2%;
+    margin-left: 0.6%;
+    margin-top: 33%;
+    width: 10%;
+    position: relative;
+ }
+ 
+ .esi{
+	margin-top: 26%;
+    width: 10%;
+    margin-left: 87.5%;
+    position: relative;
+ }
+ 
+ .impactGridPTag {
+ 	color: #555;
+    padding: 0px;
+    display: contents;
+ }
+ 
+ .gridDifferencePTag {
+ 	color: #555;
+    padding: 0px;
+    display: contents;
  }
  
  #mapCollection{
@@ -177,3 +233,56 @@ html, body
     height: 100%;
  }
  
+#divTooltipImpactGrid{
+    position: absolute;
+    border: solid;
+    width: 300px;
+    height: 140px;
+    padding: 5px;
+    font-family: Raleway, "sans-serif";
+    text-align: left;
+    pointer-events: none;
+    background: white;
+    color: black;
+    border: 1px solid #2BB0D7;
+    box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    z-index: 1000;
+}
+
+#divTooltipBoatRampId{
+    border: none;
+    border-bottom: solid;
+    font-weight: bold;
+    font-size: 20px;
+    color: forestgreen;
+    height: 25px;
+    padding: 5px 0px;
+}
+#divImpactGridDetails{
+    padding: 5px 0px;
+    font-weight: normal;
+    font-size: 14px;
+    height: 20px;
+}
+
+.trTooltip{
+    height: 20px;
+}
+.tdFirstTooltip{
+    width: 173px;
+    /* vertical-align: top; */
+}
+.tdSecondTooltip{
+	font-weight: bold;
+    /* vertical-align: top; */
+}
+
+path {
+	pointer-events: all;
+} 
+ 
+path:hover {
+  fill: pink;
+  fill-opacity: .7;
+}

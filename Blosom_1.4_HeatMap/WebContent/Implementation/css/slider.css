@@ -2,7 +2,7 @@
     background-color: white;
     font-size: 5px;
     font-family: 'Raleway', sans-serif;
-    fill: #637bad;
+    fill: #921A40;
 }
 
 p {
@@ -15,27 +15,27 @@ a {
 }
 
 .axis {
-    fill: #637bad;
+    fill: #921A40;
     -webkit-user-select: none;
     -moz-user-select: none;
     user-select: none;
 }
 
 .axis .halo {
-    stroke: #637bad;
+    stroke: #921A40;
     stroke-width: 6px;
     stroke-linecap: round;
 }
 
 .slider .handle path {
-    stroke: #8e3232;
-    stroke-width: 5px;
+    stroke: #FCC82C;
+    stroke-width: 10px;
     stroke-linecap: round;
     pointer-events: none;
 }
 
 .slider .handle text {
-    fill: #637bad;
+    fill: #921A40;
     text-align: center;
     font-size: 14px;
     z-index:-1;
@@ -44,20 +44,20 @@ a {
 
 .ticks {
     font: 10px sans-serif;
-    font-color: #637bad;
+    font-color: #921A40;
 }
 
 .tick {
     font: 14px sans-serif;
-    font-color: #637bad;
-    fill: #637bad;
+    font-color: #921A40;
+    fill: #921A40;
      font-family: 'Raleway', sans-serif;
 }
 
 .ticksOver {
     font: 14px sans-serif;
-    font-color: #637bad;
-    fill: #637bad;
+    font-color: #921A40;
+    fill: #921A40;
     font-family: 'Raleway', sans-serif;
 }
 
