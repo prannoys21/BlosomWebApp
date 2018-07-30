@@ -4,6 +4,10 @@
  * ppydimed@asu.edu
  * 
  * */
+
+
+var sliderWidth;
+var sliderHeight;
 var cumulativeBeaching00 = [];
 var cumulativeBeaching75 = [];
 var cumulativeBeaching80 = [];
@@ -27,9 +31,9 @@ var percentDiff3;
 var percentDiff4;
 
 var baselineZoom;
-var margin = {top: 40, right: 20, bottom: 30, left: 40},
+/*var margin = {top: 40, right: 20, bottom: 30, left: 40},
     width = 960 - margin.left - margin.right,
-    height = 500 - margin.top - margin.bottom;
+    height = 500 - margin.top - margin.bottom;*/
 var currentZoomLevel;
 
 var uniqueDateStart;
@@ -1019,7 +1023,11 @@ promises[0] = new Promise(function(resolve, reject) {
 });
 
 ///////////////////////////////Document.ready ends//////////////////////////////////////////////////
-
+$(window).resize(function() {
+    if (window.innerHeight < 974 || window.innerWidth < 1604){
+    	alert("Please keep the width and height of the window above 1604px and 974px respectively");
+    }
+});
 
 
 
@@ -1058,6 +1066,13 @@ $(function(){
                 icon: "fa-info-circle", 
                 callback: function(itemKey, opt, rootMenu, originalEvent) {
                 	$("#ESILegend").toggle();
+                }
+            },
+            "Grid Difference": {
+                name: "Toggle Grid Difference Legend", 
+                icon: "fa-th", 
+                callback: function(itemKey, opt, rootMenu, originalEvent) {
+                	$("#impactDifferenceLegend").toggle();
                 }
             },
             "Selected Map": {
@@ -1377,7 +1392,7 @@ var zoomLevel=map.getZoom();
 
 //Tool tip to show the details of the boat ramps
 var tooltip = d3.select("#divslider").append("div").attr("id", "divTooltip").style("opacity", 0);
-var tooltipImpactGrid = d3.select("#divslider").append("div").attr("id", "divTooltipImpactGrid").style("opacity", 0);
+//var tooltipImpactGrid = d3.select("#divslider").append("div").attr("id", "divTooltipImpactGrid").style("opacity", 0);
 
 tooltip: {
 	followPointer: true
@@ -2123,7 +2138,12 @@ sliderSvgOverlay = L.d3SvgOverlay(async function(sel, proj){
 
 		var startValue = timeScale(new Date(uniqueDateStart));
 		startingValue = new Date(uniqueDateStart);
+		
+		var sliderAW = sliderWidth + sliderMargin.left + sliderMargin.right;
+		var sliderAH = sliderHeight + sliderMargin.top + sliderMargin.bottom;
 		var svgSlider = d3.select("#divslider").append("svg")
+		  .attr("viewBox", "0 0 "+sliderAW+" "+sliderAH)
+		  .attr("preserveAspectRatio", "xMinYMin meet")
 		.attr("width", sliderWidth + sliderMargin.left + sliderMargin.right)
 		.attr("height", sliderHeight + sliderMargin.top + sliderMargin.bottom)
 		.append("g")
@@ -2138,6 +2158,7 @@ sliderSvgOverlay = L.d3SvgOverlay(async function(sel, proj){
 			"margin-bottom": "10%",
 			"z-index": "999999"
 		});
+		console.log(sliderAW, sliderAH);
 
 		svgSlider.append("g")
 		.attr("class", "x axis")
@@ -2206,14 +2227,9 @@ sliderSvgOverlay = L.d3SvgOverlay(async function(sel, proj){
 			lastClick = Date.now();
 			selectedDateValue = brush.extent()[1];
 			selectedDateValue = timeScale.invert(d3.mouse(this)[0]);
-			
-			sliderSvgOverlay.simulateSpill1();
-			sliderSvgOverlay2.simulateSpill2();
-			sliderSvgOverlay3.simulateSpill3();
-			sliderSvgOverlay4.simulateSpill4();
-			
 			handle.attr("transform", "translate(" + timeScale(selectedDateValue) + ",0)");
 			handle.select('text').text(formatDate(selectedDateValue));
+		
 		}
 
 		function brushend(){
@@ -2222,6 +2238,10 @@ sliderSvgOverlay = L.d3SvgOverlay(async function(sel, proj){
 			d3.select(this).transition()
 			.call(brush.extent([selectedDateValue, selectedDateValue]))
 			.call(brush.event);
+			sliderSvgOverlay.simulateSpill1();
+			sliderSvgOverlay2.simulateSpill2();
+			sliderSvgOverlay3.simulateSpill3();
+			sliderSvgOverlay4.simulateSpill4();
 		}
 
 	}

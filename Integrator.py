@@ -324,7 +324,7 @@ def generateOSCOM(rampFilePath, spillFilePath, containRadius, operCap, cleanTarg
 
 ####The actual program starts at this point ####
 if __name__ == '__main__':
-
+#Checking if the required directories are present or not. If not, creating them
     realpath = os.path.abspath("./data/")
     realpath2 = os.path.abspath("./data/CUT75.0/")
     realpath3 = os.path.abspath("./data/CUT80.0/")
@@ -543,6 +543,7 @@ if __name__ == '__main__':
 
         # PART 3
         # STEP 2
+        # Getting only the required columns from the csv files. Helps us to reduce the file size by almost 70-80%
         print ("Generating finalFile" + str(cleanTargetStep * 100) + " with only the Required Columns")
         filename = "data/CUT" + str(cleanTargetStep * 100) + "finalFile"+str(cleanTargetStep * 100)+".csv"
         f_in_csv = open(filename, 'rb')
